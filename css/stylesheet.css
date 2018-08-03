@@ -144,6 +144,13 @@ footer h3 {
   font-family: sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
 }
 
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+
 /* -------------------------------------------------------------------------- */
 /* Archive */
 /* -------------------------------------------------------------------------- */
