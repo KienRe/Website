@@ -56,17 +56,17 @@
             but sadly he was not available so we used free animations provided by Mixamo. Because this was not my first project we wanted do something quite ambitious. 
         </p>
         <h1> Idea</h1>
-        <p> At the time I was watching a lot of <a href= "https://youtu.be/AgnwRLkhYBY?t=1h26m5s">Super Mario 64 Speedruns</a> and was completly amazed how much depth the game had in a profiecent enough players hands.
+        <p> At the time I was watching a lot of <a href= "https://youtu.be/AgnwRLkhYBY?t=1h26m5s">Super Mario 64 Speedruns</a> and was completly amazed how much depth the game had in a proficient enough players hands.
             So the inital idea was to do a third person jump and run with an expresive move set that players could use to chain move after move.
         </p>
         <h1> Iteration</h1>
-        <p> The first few month were spent in the playground level you see above fleshing out the core move set of the game. Very quickly we had moveset consisting of Run, Jump, Long Jump, High Jump,
+        <p> The first few month were spent in the playground level you see above fleshing out the core move set. Very quickly we had a move set consisting of Run, Jump, Long Jump, High Jump,
             Wall Dash, Wall Run, Ledge Grab, Dashing and Swinging. One of the hardest things was to get the jumps to feel right. There was an very essential <a href= "https://www.gamasutra.com/blogs/DanielFineberg/20150825/244650/Designing_a_Jump_in_Unity.php">Gamasutra article</a>
-            for us which went in detail how to craft a good jump. We also realized that making a good enough third person camera in our time frame would not be possible, so pivoted our initial idea a
+            for us which went into detail on how to craft a good jump. We also realized that making a good enough third person camera in our time frame would not be possible, so we pivoted our initial idea a
             little bit and made all our levels as linear as possible.
         </p>
 
-        <p> We started building the hard levels first because at that time we were not sure if our moveset would work in practice. Building the levels involved lots of playtesting by ourself and other
+        <p> We started building the hard levels first because at that time we were not sure if our move set would work in practice. Building the levels involved lots of playtesting by ourself and other
             people. The tutorials were very hard to craft and nearly every tutorial level was at one point scrapped and rebuild from scratch. 
         </p>
 
@@ -75,34 +75,34 @@
         </p>
 
         <h1> Challenges</h1>
-        <p> I was quite suprised that so mutch vector math was involved in crafting the players moveset. In nearly every move somehow there is at least on Dot product hiding. After the 
-            project I felt quite profiecent in my abilites to do all kinds of vector magic.
+        <p> I was quite suprised that lots of vector math was involved in crafting the players move set. In nearly every move somhewere there is at least one dot product hiding. After the 
+            project I felt quite proficient in my abilites to do all kinds of vector math.
         </p>
-        <p> We also took a while to realize we have to use a State Machine to be able to transitions between the moves in code else we would have had lots of spaghetti. You have to consider that which
-            move is triggered is greatly influenced in which state the player is currenlty, for example it is only allowed to long jump if the player is sliding currently and presses A.
+        <p> We also took a while to realize we have to use a state machine to be able to transitions between the moves in code else we would have had lots of spaghetti. You have to consider that which
+            move is triggered is greatly influenced in which state the player is, for example it is only allowed to long jump if the player is sliding currently and presses A.
         </p>
         <p> The animations were not as much a problem as we where anticipating because our animations were triggered via the state machine we did not have to build out the animation state machine and could
             just play animations when the player did enter a state. Because we did not have all animations we needed we sometimes just took one frame we thought would convey the move the best and did just
-            blend to that frame and freezed the animation frame.
+            blend to that frame and freezed the frame for the duration of the move.
         </p>
-        <p> One thing that was actually to hard for us was building an intuitive third person moveset that controlls well. If you try to rotate the character about 180 degrees you can see the issues we
+        <p> One thing that was particular hard for us was building an intuitive third person move set that controls well. If you try to rotate the character about 180 degrees you can see the issues we
             have when the player tries to do rapid movements. Luckily we realized that early on and at least we changed the design so I does not get in the way all the time.
           
         </p>
-        <p> The other usual challenge was handling all the code and ensuring that the projects code had at least some consistency and architecture thought behind it. I dont think I can ever be happy with
-            architecture just because you just have to make trade offs. It is not the goal to make clean code, the goal is to make clean enough code and making something fun along the way.
+        <p> The other usual challenge was managing the code architecture and ensuring that the projects code had at least some consistency and thought behind it. I dont think I can ever be happy with
+            the architecture just because you have to make trade offs. It is not the goal to make clean code, the goal is to make clean enough code and make something fun along the way.
         </p>
         <h1> End result</h1>
         <img src="images/UltimateParkourChallenge.gif" alt="UltimateParkourChallenge" style="width:50%" class="center">
-        <p> All considered I am quite happy with the end result. We did lots of playtesting on the end of the project and there were quite a lot of people who said they liked it very much. The most often
-            critcism I get is that the controlls feel off and I totally agree with that an believe if we had more time we could have polished that a little more. The second thing people always said that 
-            even the tutorials are much to hard, I mostly blame that on suboptimal controlls. World 1 and World 2 were designed with very hard in mind because we wanted to take our moveset to the hardest
-            levels so we can understand how it would work in a SM64 speedrun like context.
+        <p> All considered I am quite happy with the end result. We did lots of playtesting and there were quite a lot of people who said they liked it very much. The most often
+            critcism I get is that the controls feel off and I totally agree with that an believe if we had more time we could have polished that a little more. The second thing people always said that 
+            even the tutorials are much to hard for them, I mostly blame that on suboptimal controls but acknowledge that tutorials shouldnt be hard. World 1 and World 2 were designed with very hard in mind
+			because we wanted to take our move set to the hardest levels so we can understand how it would work in a SM64 Speedrun like context.
         </p>
         <h1> Future</h1>
-        <p> I hope that I will find some time and continue work on this project. I truly believe we were on the right track with the moveset we build. Polishing the controlls and replacing
-            the barebones art,animations,sound and levels would greatly benefit the game. I hope you check out the game and If you have some feedback or just want to know If Ultimate Parkour Challenge
-            will continue development sometime you can message / follow me on twitter
+        <p> I hope that I will find some time and continue work on this project. I truly believe we were on the right track with the move set we build. Polishing the controls and replacing
+            the barebones art,animations,sound and levels would greatly benefit the game. I hope you check out the game and if you have some feedback or just want to know if there is any kind
+			of update to the game then you can message / follow me on twitter.
         </p>
 
         <a href= "https://twitter.com/dTimeRene"><p align = "middle" style="color:blue;font-size:30px;">My Twitter</p></a>

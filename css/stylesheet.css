@@ -97,10 +97,6 @@ article > header > h1 a {
   width: 100%;
 }
 
-.content a {
-  text-decoration: none;
-}
-
 .content code {
   font-size: 15px;
 }
