@@ -1,0 +1,236 @@
+collumn-container
+{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    align-content: space-around;   
+}
+
+row-container
+{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    align-content: space-around;  
+    margin: auto;
+}
+
+textMiddle
+{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    align-content: space-around;
+    text-align: center;
+    margin: 20px;
+}
+
+textRight
+{
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: space-around;
+  align-content: space-around;
+  text-align: center;
+  margin: 20px;
+}
+
+download
+{
+  font-size: 25px;
+  display: flex;
+  justify-content: stretch;
+}
+
+image-container
+{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-content: space-between;
+  margin: 20px;
+  padding: 20px;
+}
+
+text-center
+{
+  display: flex;
+  flex-wrap: nowrap;
+  align-content: center;
+  justify-content: center;
+  margin-left: 100px;
+  margin-right: 100px;
+}
+
+small-space-container
+{
+  height: 20px;
+}
+
+space-container
+{
+  height: 120px;
+}
+
+body
+{
+  font-family: 'Lato', sans-serif;
+}
+
+h1
+{
+  font-size: 30px;
+}
+
+h2
+{
+  font-size: 20px;
+  margin-left: 100px;
+  margin-right: 100px;
+}
+
+h3
+{
+  font-size: 18px;
+  margin-left: 100px;
+  margin-right: 100px;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Responsive */
+/* -------------------------------------------------------------------------- */
+
+@media all and (max-width: 1000px) {
+  row-container
+  {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-content: space-around;  
+    margin: auto;
+  }
+
+  image-container
+  {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-content: space-between;
+  margin: 0px;
+  padding: 20px;
+  }
+
+  text-center
+  {
+  display: flex;
+  flex-wrap: nowrap;
+  align-content: center;
+  justify-content: center;
+  margin-left: 0px;
+  margin-right: 0px;
+  }
+
+  h2
+  {
+  font-size: 20px;
+  margin-left: 0px;
+  margin-right: 0px;
+  }
+
+h3
+  {
+  font-size: 18px;
+  margin-left: 0px;
+  margin-right: 0px;
+  }
+
+}
+
+/* -------------------------------------------------------------------------- */
+/* Archive */
+/* -------------------------------------------------------------------------- */
+.post-archive {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.post-archive li {
+  padding: 20px;
+  border-top: 1px dashed black;
+}
+
+.post-archive li:last-of-type {
+  border-bottom: 1px dashed black;
+}
+
+.post-archive h3 {
+  display: inline-block;
+  margin: 0;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Navigation */
+/* -------------------------------------------------------------------------- */
+@import "compass/css3";
+
+.navigation {
+  list-style: none;
+  margin: 0; 
+  
+  background: white;
+  
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  
+  -webkit-flex-flow: row wrap;
+  justify-content: flex-end;
+}
+
+.navigation a {
+  text-decoration: none;
+  display: block;
+  padding: 1em;
+  color: black;
+}
+
+.navigation a:hover {
+  background: darken(deepskyblue, 2%);
+  text-decoration: underline;
+}
+
+@media all and (max-width: 800px) {
+  .navigation {
+    justify-content: space-around;
+  }
+}
+
+@media all and (max-width: 600px) {
+  .navigation {
+    -webkit-flex-flow: column wrap;
+    flex-flow: column wrap;
+    padding: 0;
+  }
+  
+  .navigation a { 
+    text-align: center; 
+    padding: 10px;
+    border-top: 1px solid rgba(255,255,255,0.3); 
+    border-bottom: 1px solid rgba(0,0,0,0.1); 
+  }
+
+  
+  .navigation li:last-of-type a {
+    border-bottom: none;
+  }
+}
