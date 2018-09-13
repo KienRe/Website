@@ -1,0 +1,121 @@
+<html>
+
+<head>
+
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Ultimate Parkour Challenge</title>
+
+  <link rel="stylesheet" href="css/stylesheet.css">
+</head>
+
+<body>
+
+<header>
+  <nav class="header-nav">
+    <h1><a href="/">Kienauer Rene</a></h1>
+      <ul>
+        <li>
+          <a href="/" title="Home"><i class="fa fa-home" aria-hidden="true"></i>Home</a>
+        </li>
+        <li>
+          <a href="/archive.html" title="Browse Posts"><i class="fa fa-archive" aria-hidden="true"></i>Browse Posts</a>
+        </li>
+        <li>
+          <a href="/projects.html" title ="Projects"><i class="fas fa-project-diagram" aria-hidden="true"></i>Projects</a>
+        </li>
+        <li>
+          <a href="/aboutme.html" title="About Me"><i class="fas fa-user" aria-hidden="true"></i>About Me</a>
+        </li>
+      </ul>
+  </nav>
+</header>
+
+<main>
+  <article>
+
+    <header>
+      <h1>Ultimate Parkour Challenge Post mortem!</h1>
+      <address>Published <time>03 June, 2018</time> by Kienauer Rene</address>
+    </header>
+
+    <div class="content">
+        <br>
+        <div style='position:relative;padding-bottom:54%'><iframe src='https://gfycat.com/ifr/RegularAbsoluteEnglishpointer' frameborder='0' scrolling='no' width='100%' height='100%' style='position:absolute;top:0;left:0' allowfullscreen></iframe></div><p></p>
+        <p> First prototype of the movement system. This was roughly 2 months before the submission deadline.
+        </p>
+        <p align = "middle">
+            A Xbox controller is needed in order to play!
+        </p>
+        <a href="https://drive.google.com/open?id=1YJKFfv5xN0EfyG1QhDNtvsDTvhqEdyKX"><p align = "middle" style="color:red;font-size:30px;">Download here</p></a>
+
+
+        <h1> Constraints</h1>
+        <p> As part of my games programming education at SAE Vienna we where tasked to develop a game protoype in about 3 months. I had help from one of my collegues and friend Lukas Schützenhofer who
+            was the second programmer on this project. The last week before sumbission we got some support from two audio designers who made some sound effects and a dynamic theme. We also got some
+            feedback from Game Designer Alexander Grenus who provided us with his knowledge on game design. Originally we planed to have an animator on the team who would make the needed animations 
+            but sadly he was not available so we used free animations provided by Mixamo. Because this was not my first project we wanted do something quite ambitious. 
+        </p>
+        <h1> Idea</h1>
+        <p> At the time I was watching a lot of <a href= "https://youtu.be/AgnwRLkhYBY?t=1h26m5s">Super Mario 64 Speedruns</a> and was completly amazed how much depth the game had in a proficient enough players hands.
+            So the inital idea was to do a third person jump and run with an expresive move set that players could use to chain move after move.
+        </p>
+        <h1> Iteration</h1>
+        <p> The first few month were spent in the playground level you see above fleshing out the core move set. Very quickly we had a move set consisting of Run, Jump, Long Jump, High Jump,
+            Wall Dash, Wall Run, Ledge Grab, Dashing and Swinging. One of the hardest things was to get the jumps to feel right. There was an very essential <a href= "https://www.gamasutra.com/blogs/DanielFineberg/20150825/244650/Designing_a_Jump_in_Unity.php">Gamasutra article</a>
+            for us which went into detail on how to craft a good jump. We also realized that making a good enough third person camera in our time frame would not be possible, so we pivoted our initial idea a
+            little bit and made all our levels as linear as possible.
+        </p>
+
+        <p> We started building the hard levels first because at that time we were not sure if our move set would work in practice. Building the levels involved lots of playtesting by ourself and other
+            people. The tutorials were very hard to craft and nearly every tutorial level was at one point scrapped and rebuild from scratch. 
+        </p>
+
+        <p> The last thing we iterated quite a bit on was the feel of speed. We realized very late in the project that the feeling of accelerating and speeding through the level were intergral to the
+            players experience. We played around with acceleration curves of the players movement speed, field of view effects and trails on the player.
+        </p>
+
+        <h1> Challenges</h1>
+        <p> I was quite suprised that lots of vector math was involved in crafting the players move set. In nearly every move somhewere there is at least one dot product hiding. After the 
+            project I felt quite proficient in my abilites to do all kinds of vector math.
+        </p>
+        <p> We also took a while to realize we have to use a state machine to be able to transitions between the moves in code else we would have had lots of spaghetti. You have to consider that which
+            move is triggered is greatly influenced in which state the player is, for example it is only allowed to long jump if the player is sliding currently and presses A.
+        </p>
+        <p> The animations were not as much a problem as we where anticipating because our animations were triggered via the state machine we did not have to build out the animation state machine and could
+            just play animations when the player did enter a state. Because we did not have all animations we needed we sometimes just took one frame we thought would convey the move the best and did just
+            blend to that frame and freezed the frame for the duration of the move.
+        </p>
+        <p> One thing that was particular hard for us was building an intuitive third person move set that controls well. If you try to rotate the character about 180 degrees you can see the issues we
+            have when the player tries to do rapid movements. Luckily we realized that early on and at least we changed the design so I does not get in the way all the time.
+          
+        </p>
+        <p> The other usual challenge was managing the code architecture and ensuring that the projects code had at least some consistency and thought behind it. I dont think I can ever be happy with
+            the architecture just because you have to make trade offs. It is not the goal to make clean code, the goal is to make clean enough code and make something fun along the way.
+        </p>
+        <h1> End result</h1>
+        <img src="images/UltimateParkourChallenge.gif" alt="UltimateParkourChallenge" style="width:50%" class="center">
+        <p> All considered I am quite happy with the end result. We did lots of playtesting and there were quite a lot of people who said they liked it very much. The most often
+            critcism I get is that the controls feel off and I totally agree with that an believe if we had more time we could have polished that a little more. The second thing people always said that 
+            even the tutorials are much to hard for them, I mostly blame that on suboptimal controls but acknowledge that tutorials shouldnt be hard. World 1 and World 2 were designed with very hard in mind
+			because we wanted to take our move set to the hardest levels so we can understand how it would work in a SM64 Speedrun like context.
+        </p>
+        <h1> Future</h1>
+        <p> I hope that I will find some time and continue work on this project. I truly believe we were on the right track with the move set we build. Polishing the controls and replacing
+            the barebones art,animations,sound and levels would greatly benefit the game. I hope you check out the game and if you have some feedback or just want to know if there is any kind
+			of update to the game then you can message / follow me on twitter.
+        </p>
+
+        <a href= "https://twitter.com/dTimeRene"><p align = "middle" style="color:blue;font-size:30px;">My Twitter</p></a>
+    </div>
+  </article>   
+</main>
+
+<footer>
+    <h3>Kienauer Rene</h3>
+</footer>
+
+</body>
+</html>
