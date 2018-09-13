@@ -2,7 +2,9 @@ how to center gyfcat iframes
 links are on new line
 add website branding to top left
 
+-Content
 make animals squad gif/screenshot
 make jumper gif/screenshot
+
+-Nice to Have
 make ui blog post
-make data locality blog post
