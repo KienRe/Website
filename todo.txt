@@ -1,13 +1,12 @@
 -NEEDS TO BE DONE
-how to size gyfcat iframes
-
 links are on new line
-different flexbox behaviours depending on browser ->  
-chrome scales image on about me weird
 
 -Nice to Have
 scale screenshot items on mobile to be larger
+scale game jam videos om mobile larger
 add website branding to top left
+different flexbox behaviours depending on browser ->  
+chrome scales image on about me weird
 
 -Content
 
