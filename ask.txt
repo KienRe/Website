@@ -1,18 +1,16 @@
 -NEEDS TO BE DONE
-how to size gyfcat iframes
+links are on new line 
+make animals squad gif/screenshot
 
-links are on new line
-different flexbox behaviours depending on browser ->  
-chrome scales image on about me weird
+make jumper gif/screenshot
 
 -Nice to Have
 scale screenshot items on mobile to be larger
+different flexbox behaviours depending on browser ->  
+chrome scales image on about me weird
 add website branding to top left
 
 -Content
 
-make animals squad gif/screenshot
-
-make jumper gif/screenshot
 make ui blog post
 
