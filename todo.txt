@@ -10,8 +10,5 @@ chrome scales image on about me weird
 
 -Content
 
-make animals squad gif/screenshot
-
-make jumper gif/screenshot
 make ui blog post
 
