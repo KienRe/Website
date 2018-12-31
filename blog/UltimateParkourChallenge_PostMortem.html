@@ -80,12 +80,12 @@
         <text-center>
             We also took a while to realize we have to use a state machine to be able to transition between the moves in code else we
             would have had lots of spaghetti. You have to consider that which move is triggered is greatly influenced in
-            which state the player is, for example it is only allowed to long jump if the player is sliding currently and
+            which state the player is, for example it is only allowed to long jump if the player is currently sliding and
             presses A.
         </text-center>
         <small-space-container></small-space-container>
         <text-center>
-            The animations were not as much a problem as we where anticipating because our animations were triggered via the state machine
+            The animations were not as big as a problem as we where anticipating because our animations were triggered via the state machine and
             we did not have to build out the animation state machine and could just play animations when the player did enter
             a state. Because we did not have all animations we needed we sometimes just took one frame we thought would convey
             the move the best and did just blend to that frame and freezed the frame for the duration of the move.
@@ -94,7 +94,7 @@
         <text-center>
             One thing that was particular hard for us was building an intuitive third person move set that controls well. If you try
             to rotate the character about 180 degrees you can see the issues we have when the player tries to do rapid movements.
-            Luckily we realized that early on and at least changed the design so I does not get in the way all the time.
+            Luckily we realized that early on and at least changed the design so it does not get in the way all the time.
         </text-center>
         <small-space-container></small-space-container>
         <text-center>
@@ -111,18 +111,11 @@
 
         <text-center>
             All considered I am quite happy with the end result. We did lots of playtesting and there were quite a lot of people who
-            said they liked it very much. The most often critcism I get is that the controls feel off and I totally agree
-            with that an believe if we had more time we could have polished that a little more. The second thing people always
-            said that even the tutorials are much to hard for them, I mostly blame that on suboptimal controls but acknowledge
-            that tutorials shouldnt be hard. World 1 and World 2 were designed with very hard in mind because we wanted to
+            said they liked it very much. The critcism we often got is that the controls feel off and I totally agree
+            with that and believe if we had more time we could have polished them more. The second thing people always
+            bring up is that even the tutorials are much to hard for them, I mostly blame that on suboptimal controls but acknowledge
+            that tutorials shouldn't be hard. World 1 and World 2 were designed with very hard in mind because we wanted to
             take our move set to the hardest levels so we can understand how it would work in a SM64 Speedrun like context.
-        </text-center>
-        <h1> Future</h1>
-        <text-center>
-            I hope that I will find some time and continue work on this project. I truly believe we were on the right track with the
-            move set we build. Polishing the controls and replacing the barebones art,animations,sound and levels would greatly
-            benefit the game. I hope you check out the game and if you have some feedback or just want to know if there is
-            any kind of update to the game then you can message / follow me on twitter.
         </text-center>
     </collumn-container>
 
