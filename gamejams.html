@@ -1,160 +1,134 @@
-<html>
-<header>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>GameJams</title>
-    <link rel="stylesheet" href="stylesheet.css">
-</header>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kienauer René - Game Jams</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <nav class="bg-gray-800 text-white">
+        <div class="container mx-auto px-4 py-3">
+            <ul class="flex justify-center space-x-6">
+                <li><a href="index.html" class="hover:text-blue-300">Home</a></li>
+                <li><a href="portfolio.html" class="hover:text-blue-300">Portfolio</a></li>
+                <li><a href="gamejams.html" class="hover:text-blue-300">Game Jams</a></li>
+            </ul>
+        </div>
+    </nav>
 
-<body>
-    <ul class="navigation">
-        <li><a href="index.html"><b>Home</b></a></li>
-        <li><a href="projects.html"><b>Projects</b></a></li>
-        <li><a href="gamejams.html" style="text-decoration: underline"><b>Game Jams</b></a></li>
-        <li><a href="blog.html"><b>Blog</b></a></li>
-        <li><a href="https://github.com/KienRe"><b>GitHub</b></a></li>
-        <li><a href="aboutme.html"><b>About Me</b></a></li>
-    </ul>
+    <header class="bg-blue-600 text-white py-20">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-5xl font-bold mb-4">Game Jams</h1>
+            <p class="text-2xl">Rapid Prototyping and Creative Problem Solving</p>
+        </div>
+    </header>
 
+    <main class="container mx-auto px-4 py-8">
+        <section class="mb-12">
+            <p class="text-xl mb-6 text-center">Game jams have been an integral part of my journey as a game developer, allowing me to experiment with new ideas, technologies, and collaborations. Here are some of my most notable game jam experiences:</p>
+        </section>
 
-    <collumn-container>
-        <row-container>
-            <h1>Kitten Smack</h1>
-        </row-container>
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold mb-6">Kitten Smack - Geek GameJam 2018</h2>
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="md:flex md:space-x-6">
+                    <div class="md:w-1/2 mb-6 md:mb-0">
+                        <div class="border-4 border-gray-300 rounded-lg overflow-hidden">
+                            <video width="100%" autoplay muted loop playsinline class="w-full">
+                                <source src="video/KittenSmack.mp4" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                    </div>
+                    <div class="md:w-1/2">
+                        <p class="mb-4">A rhythmic sidescroller set in a surreal world. Players save a kitten by soundblasting it forward while avoiding dangerous creatures.</p>
+                        <ul class="list-disc pl-6 mb-4">
+                            <li>Developed in 48 hours</li>
+                            <li>Collaborated with an artist, sound designer, and game designer</li>
+                            <li>Focused on programming while working with a dedicated game designer for the first time</li>
+                            <li>Incorporated sound library from the Polish Experimental Radio Station</li>
+                        </ul>
+                        <a href="https://cyangmou.itch.io/kitten-smack" target="_blank" class="inline-block bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">Play Kitten Smack</a>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-        <row-container>
-            <video autoplay controls loop muted style="width: 100%;height: 100%; max-width: 600; max-height: 400;">
-                <source src="video/KittenSmack.mp4" type="video/mp4">
-            </video>
-            <textMiddle>
-                Kitten Smack is a rhythmic sidescroller set in a surreal world. You have to save little a kitten by soundblasting it forward
-                or if you are evil, smacking it forward but be carefull there are dangerous creatures looming around the corner that love to eat tasty
-                little kittens.
-            </textMiddle>
-            <textRight>
-                Made for Geek GameJam 2018 in 48 hours. The task was to make a game that features the sound library of the PRES (Polish Experimental Radio Station). 
-                I had the pleasure to team up with an artist, sound designer and a game designer. This was the first time I worked with an game designer and I could
-                focus only on the programming part. By far the best GameJam experience for me until now.
-            </textRight>
-        </row-container>
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold mb-6">Scrap Race - Game Makers Toolkit GameJam 2018</h2>
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="md:flex md:space-x-6">
+                    <div class="md:w-1/2 mb-6 md:mb-0">
+                        <div class="border-4 border-gray-300 rounded-lg overflow-hidden">
+                            <video width="100%" autoplay muted loop playsinline class="w-full">
+                                <source src="video/ScrapRace.mp4" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                    </div>
+                    <div class="md:w-1/2">
+                        <p class="mb-4">A unique racing game where players can only brake, not accelerate. Navigate a junkyard track, dodging obstacles and managing speed.</p>
+                        <ul class="list-disc pl-6 mb-4">
+                            <li>Developed in 48 hours</li>
+                            <li>Theme: Genre without Mechanics</li>
+                            <li>Implemented creative physics and control systems</li>
+                            <li>Created dynamic jump mechanics using Bezier curves</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-        <small-space-container></small-space-container>
-        <row-container>
-            <download><a href="https://cyangmou.itch.io/kitten-smack">Download</a></download>
-        </row-container>
-        <small-space-container></small-space-container>
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold mb-6">Beat Piston - Global GameJam 2017</h2>
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="md:flex md:space-x-6">
+                    <div class="md:w-1/2 mb-6 md:mb-0">
+                        <div class="border-4 border-gray-300 rounded-lg overflow-hidden">
+                            <video width="100%" autoplay muted loop playsinline class="w-full">
+                                <source src="video/BeatPiston.mp4" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                    </div>
+                    <div class="md:w-1/2">
+                        <p class="mb-4">A rhythm infinite runner where players tap in sync with the beat while switching gears to dodge obstacles and survive.</p>
+                        <ul class="list-disc pl-6 mb-4">
+                            <li>Developed in 48 hours</li>
+                            <li>Theme: Transmission</li>
+                            <li>Worked on gameplay mechanics and obstacle generation</li>
+                            <li>Collaborated with a sound designer for beat synchronization</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
 
+        <section>
+            <h2 class="text-3xl font-bold mb-6">Lessons Learned</h2>
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <ul class="list-disc pl-6">
+                    <li class="mb-2">Rapid prototyping and iterative development</li>
+                    <li class="mb-2">Effective time management and prioritization</li>
+                    <li class="mb-2">Collaboration with diverse teams under pressure</li>
+                    <li class="mb-2">Creativity in constraint-based problem-solving</li>
+                    <li>Balancing scope and quality in limited timeframes</li>
+                </ul>
+            </div>
+        </section>
+    </main>
 
-        <row-container>
-            <h1>Scrap Race</h1>
-        </row-container>
-
-        <row-container>
-            <video autoplay controls loop style="width: 100%;height: 81%; max-width: 600; max-height: 400;">
-                <source src="video/ScrapRace.mp4" type="video/mp4">
-            </video>
-            <textMiddle>
-                Racing game where you are only able to break instead of accelerate. Drive down the junk yard track and try to dodge obstacles
-                all while keeping an eye on the constant increasing speed of your shopping cart. Keep the speed in a sweet
-                spot where you are simultaneosly fast enough to take the big air jumps and also slow enough to be able to
-                dodge hazards and collect new crowbars to be able to brake and steer your shopping cart towards the finish
-                line.
-            </textMiddle>
-            <textRight>
-                Made for Game Makers Toolkit GameJam 2018 in 48 hours. The theme was Genre without Mechanics. Me, a second programmer and
-                only one artist (credit to him for making so much stuff) tried to make a racing game with a twist. I am
-                pretty happy with the feeling of speed you get while playing. The most interesting stuff to work on where
-                the jumps which are completly faked with the help of bezier curves, this allows for consistent fail and sucess
-                landing spots!
-            </textRight>
-        </row-container>
-
-        <small-space-container></small-space-container>
-        <row-container>
-            <download><a href="https://drive.google.com/open?id=19ufECt-sBwDRs2Qh3JLD9WIYRnnlwYjZ">Download</a></download>
-        </row-container>
-        <small-space-container></small-space-container>
-
-
-        <row-container>
-            <h1>Beat Piston</h1>
-        </row-container>
-     
-        <row-container>
-            <video autoplay controls loop style="width: 100%;height: 100%; max-width: 600; max-height: 400;">
-                <source src="video/BeatPiston.mp4" type="video/mp4">
-            </video>
-            <textMiddle>
-                A rythm infinite runner. Tap in sync with the beat while also switching gears at the right time. Keep the rythm and dodge
-                obstacles and you will survive till the end! If you miss beats or crash into obstacles your
-                health will lower until you run out of health and fail!
-            </textMiddle>
-            <textRight>
-                Made for Global GameJam 2017 in 48 hours. Our team consisted of 2 programmers, a sound designer and 2 artists. The game is
-                based loosely on the jams theme Transmission. We tried to convey the feeling of what switching gears could
-                feel like inside an engine. I worked on everything except syncinc the beat with gameplay which proved to
-                be very hard to get right within the constraints of the jam.
-            </textRight>
-        </row-container>
-
-        <small-space-container></small-space-container>
-        <row-container>
-            <download><a href="https://drive.google.com/open?id=1bVo-R5nloY3rLqC1MIJFaBGD5Cf1wapY">Download</a></download>
-        </row-container>
-        <small-space-container></small-space-container>
-
-
-        <row-container>
-            <h1>Die in the UI</h1>
-        </row-container>
-
-        <row-container>
-            <img src="images/DieInTheUI.gif" alt="AnimalSquad" style="width:90%; align-self: center;">
-            <textMiddle>
-                Minigame challenges that have to be beaten without loosing all lives. Are you ready for madness? Trying to beat this game
-                will prove a challenge thats for sure. Simple tasks like plugging in a USB Stick, typing a word or pressing
-                a button where never that hard.
-            </textMiddle>
-            <textRight>
-                Made for Reversed Festivale GameJam 2017 in 72 hours. This was by far the most chaotic jam I have ever been part of. Our
-                team consisted of 8 people which was an absolute nightmare. Trying to steer the ship towards an unified creative
-                goal was impossible. Also keeping everyone busy with work took away a lot of my time. I learned a lot
-                about group dynamics and how the amount of content isn't realy critical for a jam.
-            </textRight>
-        </row-container>
-
-        <small-space-container></small-space-container>
-        <row-container>
-            <download><a href="https://drive.google.com/open?id=1KY9o-PsbDrqeU4uz8e4XpLG9KeEZO8Av">Download</a></download>
-        </row-container>
-        <small-space-container></small-space-container>
-
-
-        <row-container>
-            <h1>The Beat Down</h1>
-        </row-container>
-
-        <row-container>
-            <img src="images/TheBeatDown.gif" alt="AnimalSquad" style="width:86%; align-self: center;">
-            <textMiddle>
-                Shoot your way out of trouble and minimize the mafia bosse's galactic army as dual wielding police space ranger. Use your
-                booster and keep on collecting the spawning power ups to hold out for 5 minutes and survive the onslaught of
-                mafia henchman.
-            </textMiddle>
-            <textRight>
-                Made for BeansJam 2017 in 48 hours. The theme was Space Mafia. My first GameJam ever! Also the first time I worked in a group
-                on a game. After only 3 months of experience making games we decided to jump into the cold water and just
-                make something. Pretty happy with the results considering the circumstances. Also I learned that the goal survive
-                for 5 minutes isn't that engaging for players.
-            </textRight>
-        </row-container>
-
-        <small-space-container></small-space-container>
-        <row-container>
-            <download><a href="https://drive.google.com/open?id=1Edd65riaVe8gS3E4eoFX6TJ-_hjoQ0nK">Download</a></download>
-        </row-container>
-
-    </collumn-container>
-
+    <footer class="bg-gray-800 text-white py-6 mt-12">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; 2024 Rene Kienauer. All rights reserved.</p>
+        </div>
+    </footer>
 </body>
-
 </html>

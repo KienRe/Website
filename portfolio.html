@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kienauer René - Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+<nav class="bg-gray-800 text-white">
+    <div class="container mx-auto px-4 py-3">
+        <ul class="flex justify-center space-x-6">
+            <li><a href="index.html" class="hover:text-blue-300">Home</a></li>
+            <li><a href="portfolio.html" class="hover:text-blue-300">Portfolio</a></li>
+            <li><a href="gamejams.html" class="hover:text-blue-300">Game Jams</a></li>
+        </ul>
+    </div>
+</nav>
+
+    <header class="bg-blue-600 text-white py-20">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-5xl font-bold mb-4">Portfolio</h1>
+            <p class="text-2xl">Professional Work and Academic Projects</p>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold mb-6">Professional Experience</h2>
+            
+            <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+                <h3 class="text-2xl font-bold mb-4">Strange Horizons - Outerstellar</h3>
+                <p class="mb-4"><strong>Duration:</strong> 4 Years (2020-2024)</p>
+                <p class="mb-4">Led the development of Outerstellar, a multiplayer survival game set in a vast, procedurally generated galaxy.</p>
+                
+                <div class="mt-6">
+                    <img src="images/Outerstellar.png" alt="Outerstellar Screenshot" class="w-full h-64 object-cover rounded-lg mb-4">
+                    <ul class="list-disc pl-6 mb-4">
+                        <li>Implemented complex networking systems for seamless multiplayer interactions</li>
+                        <li>Developed scalable game systems to support survival mechanics</li>
+                        <li>Created procedural generation algorithms for diverse planetary environments</li>
+                        <li>Optimized performance for large-scale environments and numerous concurrent players</li>
+                    </ul>
+                    <p><strong>Technologies used:</strong> C++, Unreal Engine 4, Custom networking solutions</p>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+                <h3 class="text-2xl font-bold mb-4">d3t Limited</h3>
+                <p class="mb-4"><strong>Duration:</strong> 1 Year (2019-2020)</p>
+                <p class="mb-4">d3t is a UK-based work-for-hire game development studio, known for its contributions to various AAA titles and technical expertise in game porting and optimization.</p>
+                
+                <div class="mt-6">
+                    <h4 class="text-xl font-bold mb-3">Project: Assetto Corsa Competizione</h4>
+                    <img src="images/Asseto.png" alt="Assetto Corsa Screenshot" class="w-full h-64 object-cover rounded-lg mb-4">
+                    <p class="mb-4">Assetto Corsa is a highly acclaimed racing simulation game known for its realistic physics and driving experience.</p>
+                    <ul class="list-disc pl-6 mb-4">
+                        <li>Contributed to performance optimization for console versions</li>
+                        <li>Optimized memory to make the game fit on consoles</li>
+						<li>Development of XB1/PS4 User Management Layer</li>
+                    </ul>
+                    <p><strong>Technologies used:</strong> C++, UE4, Perforce, Console SDKs</p>
+                </div>
+            </div>
+        </section>
+
+		<section class="mb-12">
+			<h2 class="text-3xl font-bold mb-6">Academic Projects</h2>
+			<div class="grid md:grid-cols-2 gap-6">
+				<!-- Animal Squad -->
+				<div class="bg-white rounded-lg shadow-md overflow-hidden">
+					<div class="border-b border-gray-200">
+						<video width="100%" autoplay muted loop playsinline class="w-full">
+							<source src="video/AnimalSquad.mp4" type="video/mp4">
+							Your browser does not support the video tag.
+						</video>
+					</div>
+					<div class="p-6">
+						<h3 class="text-2xl font-bold mb-4">Animal Squad</h3>
+						<p class="mb-4">A turn-based 1v1 multiplayer strategy game featuring unique animal characters with special abilities.</p>
+						<ul class="list-disc pl-6 mb-4 space-y-2">
+							<li>Implemented networking using GameSparks Services</li>
+							<li>Developed the hexagon grid system</li>
+							<li>Created modular unit programming for gameplay variety</li>
+						</ul>
+						<p class="mb-2"><strong>Technologies:</strong> Unity, C#, GameSparks</p>
+					</div>
+				</div>
+		
+				<!-- Ultimate Parkour Challenge -->
+				<div class="bg-white rounded-lg shadow-md overflow-hidden">
+					<div class="border-b border-gray-200">
+						<video width="100%" autoplay muted loop playsinline class="w-full">
+							<source src="video/Jumper.mp4" type="video/mp4">
+							Your browser does not support the video tag.
+						</video>
+					</div>
+					<div class="p-6">
+						<h3 class="text-2xl font-bold mb-4">Ultimate Parkour Challenge</h3>
+						<p class="mb-4">A 3D platformer featuring advanced movement mechanics and challenging level design.</p>
+						<ul class="list-disc pl-6 mb-4 space-y-2">
+							<li>Developed a complex character controller with various parkour moves</li>
+							<li>Implemented a dynamic camera system</li>
+							<li>Created procedural animation systems for smooth character movement</li>
+						</ul>
+						<p class="mb-2"><strong>Technologies:</strong> Unity, C#</p>
+					</div>
+				</div>
+			</div>
+		</section>
+
+    </main>
+
+    <footer class="bg-gray-800 text-white py-6 mt-12">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; 2024 Rene Kienauer. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
