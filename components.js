@@ -7,7 +7,7 @@ class SiteNav extends HTMLElement {
       <nav class="fixed top-0 right-0 p-8 z-50">
         <div class="flex gap-8">
           <a href="index.html" class="nav-link ${current === "portfolio" ? "active" : ""} font-medium">Portfolio</a>
-          <a href="blog.html" class="nav-link ${current === "blog" ? "active" : ""} font-medium">Blog</a>
+          <!--<a href="blog.html" class="nav-link ${current === "blog" ? "active" : ""} font-medium">Blog</a>-->
         </div>
       </nav>
     `
