@@ -32,3 +32,5 @@ function renderBlogPosts(containerId) {
     container.appendChild(blogCard)
   })
 }
+
+renderBlogPosts('blog-posts-container');
