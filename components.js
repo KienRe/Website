@@ -54,7 +54,7 @@ class BlogCard extends HTMLElement {
     const link = this.getAttribute("link") || "#"
 
     this.innerHTML = `
-      <article class="blog-card rounded-lg p-8">
+      <article class="blog-card rounded-lg p-8 mb-4">
         <div class="mb-3">
           <span class="text-sm text-muted">${date}</span>
         </div>
