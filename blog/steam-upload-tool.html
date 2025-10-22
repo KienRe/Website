@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creating a Steam Upload Tool in Unreal Engine - René Kienauer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="components.js" defer></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a;
+            color: #e2e8f0;
+            font-size: 18px;
+            line-height: 1.7;
+        }
+        
+        .nav-link {
+            color: #94a3b8;
+            transition: color 0.2s ease;
+        }
+        
+        .nav-link:hover {
+            color: #22d3ee;
+        }
+        
+        .nav-link.active {
+            color: #e2e8f0;
+        }
+        
+        .accent-link {
+            color: #22d3ee;
+            transition: color 0.2s ease;
+        }
+        
+        .accent-link:hover {
+            color: #06b6d4;
+        }
+        
+        pre {
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        code {
+            font-family: 'Courier New', monospace;
+            color: #22d3ee;
+        }
+        
+        pre code {
+            color: #e2e8f0;
+        }
+        
+        h1, h2, h3, h4 {
+            color: #f1f5f9;
+        }
+        
+        .text-muted {
+            color: #94a3b8;
+        }
+        
+        article {
+            background-color: #1e293b;
+            border: 1px solid #334155;
+        }
+        
+        hr {
+            border-color: #334155;
+        }
+        
+        strong {
+            color: #f1f5f9;
+        }
+    </style>
+</head>
+<body>
+
+<site-nav current="blog"></site-nav>
+
+<page-header 
+  title="Creating a Steam Upload Tool in Unreal Engine" 
+  subtitle="December 2024"
+  back-link="blog.html"
+  back-text="Back to Blog">
+</page-header>
+
+<main class="px-8 pb-20">
+    <div class="max-w-5xl mx-auto">
+        
+        <article class="rounded-lg p-8 md:p-12">
+            
+            <p class="mb-6">Uploading builds to Steam typically involves running SteamCMD from the command line with various parameters. For teams working in Unreal Engine, having a <strong>custom editor tool</strong> that streamlines this process can save time and reduce errors. This post walks through creating a <strong>Slate-based UI widget</strong> that integrates directly into the Unreal Editor, making Steam uploads a one-click operation.</p>
+
+            <hr class="my-8">
+
+            <h3 class="text-2xl font-bold mb-4">Why Build This Tool?</h3>
+            
+            <p class="mb-4 text-muted">The typical Steam upload workflow involves:</p>
+            
+            <ul class="list-disc pl-6 mb-4 space-y-2 text-muted">
+                <li>Opening a command prompt or terminal</li>
+                <li>Navigating to the SteamCMD directory</li>
+                <li>Running commands with proper credentials and VDF file paths</li>
+                <li>Managing sensitive passwords in plaintext</li>
+            </ul>
+
+            <p class="mb-6 text-muted">By integrating this into the Unreal Editor, we can provide a <strong>user-friendly interface</strong> with validation, file browsing, and secure credential handling via environment variables.</p>
+
+            <hr class="my-8">
+
+            <h3 class="text-2xl font-bold mb-4">Step 1: Create the Slate Widget</h3>
+            
+            <p class="mb-4 text-muted">We'll use Unreal's <strong>Slate framework</strong> to build a custom UI window. The widget includes:</p>
+
+            <ul class="list-disc pl-6 mb-4 space-y-2 text-muted">
+                <li>Text fields for Steam username, VDF path, and SteamCMD path</li>
+                <li>Read-only password field (reads from environment variable)</li>
+                <li>Browse buttons for file selection</li>
+                <li>Upload button with validation</li>
+                <li>Status display for feedback</li>
+            </ul>
+
+            <p class="mb-4 text-muted">Here's the header file (<code>SteamUpload.h</code>):</p>
+
+            <pre class="mb-6"><code>#pragma once
+
+#include "CoreMinimal.h"
+#include "Widgets/SCompoundWidget.h"
+
+class SEditableTextBox;
+
+class SSteamUploadWidget : public SCompoundWidget
+{
+public:
+    SLATE_BEGIN_ARGS(SSteamUploadWidget) {}
+    SLATE_END_ARGS()
+
+    void Construct(const FArguments& InArgs);
+
+private:
+    TSharedPtr&lt;SEditableTextBox&gt; UsernameTextBox;
+    TSharedPtr&lt;SEditableTextBox&gt; PasswordTextBox;
+    TSharedPtr&lt;SEditableTextBox&gt; VDFPathTextBox;
+    TSharedPtr&lt;SEditableTextBox&gt; SteamCMDPathTextBox;
+    TSharedPtr&lt;STextBlock&gt; StatusTextBlock;
+
+    FReply OnUploadClicked();
+    FReply OnBrowseVDFClicked();
+    FReply OnBrowseSteamCMDClicked();
+    
+    void UpdateStatus(const FString& Message, const FLinearColor& Color);
+    bool ValidateInputs(FString& OutErrorMessage);
+};
+
+class FSteamUpload
+{
+public:
+    static void OpenSteamUploadWidget();
+    static void Run(const FString& Username, const FString& Password, 
+                    const FString& VDFPath, const FString& SteamCMDPath);
+};</code></pre>
+
+            <hr class="my-8">
+
+            <h3 class="text-2xl font-bold mb-4">Step 2: Implement the Upload Logic</h3>
+            
+            <p class="mb-4 text-muted">The core upload function uses <code>FPlatformProcess::CreateProc</code> to launch SteamCMD with the appropriate parameters:</p>
+
+            <pre class="mb-6"><code>void FSteamUpload::Run(const FString& Username, const FString& Password, 
+                       const FString& VDFPath, const FString& SteamCMDPath)
+{
+    // Format: steamcmd.exe +login <username> <password> +run_app_build <vdf_path>
+    FString Arguments = FString::Printf(
+        TEXT("+login %s %s +run_app_build \"%s\""), 
+        *Username, *Password, *VDFPath
+    );
+    
+    UE_LOG(LogTemp, Log, TEXT("Launching SteamCMD: %s %s"), 
+           *SteamCMDPath, *Arguments);
+
+    FString CommandLine = FString::Printf(TEXT("/c \"%s %s\""), 
+                                           *SteamCMDPath, *Arguments);
+    FPlatformProcess::CreateProc(
+        TEXT("cmd.exe"),
+        *CommandLine,
+        true,   // bLaunchDetached
+        false,  // bLaunchHidden
+        false,  // bLaunchReallyHidden
+        nullptr,
+        0,
+        nullptr,
+        nullptr
+    );
+}</code></pre>
+
+            <p class="mb-6 text-muted">The password is read from the <code>STEAM_PASSWORD</code> environment variable to avoid storing credentials in the project:</p>
+
+            <pre class="mb-6"><code>FString Password = FPlatformMisc::GetEnvironmentVariable(TEXT("STEAM_PASSWORD"));</code></pre>
+
+            <hr class="my-8">
+
+            <h3 class="text-2xl font-bold mb-4">Step 3: Add Validation</h3>
+            
+            <p class="mb-4 text-muted">Before launching SteamCMD, validate all inputs to provide clear error messages:</p>
+
+            <pre class="mb-6"><code>bool SSteamUploadWidget::ValidateInputs(FString& OutErrorMessage)
+{
+    if (UsernameTextBox->GetText().IsEmpty())
+    {
+        OutErrorMessage = TEXT("Error: Steam username is required");
+        return false;
+    }
+
+    FString Password = FPlatformMisc::GetEnvironmentVariable(TEXT("STEAM_PASSWORD"));
+    if (Password.IsEmpty())
+    {
+        OutErrorMessage = TEXT("Error: STEAM_PASSWORD environment variable is not set");
+        return false;
+    }
+
+    FString VDFPath = VDFPathTextBox->GetText().ToString();
+    if (!FPaths::FileExists(VDFPath))
+    {
+        OutErrorMessage = TEXT("Error: VDF file does not exist");
+        return false;
+    }
+
+    FString SteamCMDPath = SteamCMDPathTextBox->GetText().ToString();
+    if (!FPaths::FileExists(SteamCMDPath))
+    {
+        OutErrorMessage = TEXT("Error: SteamCMD executable does not exist");
+        return false;
+    }
+
+    return true;
+}</code></pre>
+
+            <hr class="my-8">
+
+            <h3 class="text-2xl font-bold mb-4">Step 4: Integrate into Editor Menu</h3>
+            
+            <p class="mb-4 text-muted">To make the tool easily accessible, add it to a custom editor menu. First, create the command in your editor commands class:</p>
+
+            <pre class="mb-6"><code>// In your editor commands header
+class FCustomEditorCommands : public TCommands&lt;FCustomEditorCommands&gt;
+{
+public:
+    TSharedPtr&lt;FUICommandInfo&gt; UploadToSteamCommand;
+    
+    virtual void RegisterCommands() override
+    {
+        UI_COMMAND(UploadToSteamCommand, "Upload to Steam", 
+                   "Uploads a build to steam.", 
+                   EUserInterfaceActionType::Button, FInputChord());
+    }
+};</code></pre>
+
+            <p class="mb-4 text-muted">Then wire it up in your menu class:</p>
+
+            <pre class="mb-6"><code>void FRetroMenu::MapCommandsToActions()
+{
+    Commands = MakeShareable(new FUICommandList);
+    Commands->MapAction(
+        FCustomEditorCommands::Get().UploadToSteamCommand, 
+        FExecuteAction::CreateStatic(FSteamUpload::OpenSteamUploadWidget)
+    );
+}
+
+void FRetroMenu::CreateSubmenu()
+{
+    UToolMenus* ToolMenus = UToolMenus::Get();
+    UToolMenu* MainMenuBar = ToolMenus->ExtendMenu("LevelEditor.MainMenu");
+    
+    UToolMenu* RetroMenu = MainMenuBar->AddSubMenu(
+        "MainMenu", NAME_None, "Retro", 
+        FText::FromString("Retro"), 
+        FText::FromString("RetroMenu")
+    );
+    
+    FToolMenuSection& SteamSection = RetroMenu->AddSection(
+        "Steam", FText::FromString("Steam")
+    );
+    SteamSection.AddMenuEntryWithCommandList(
+        FCustomEditorCommands::Get().UploadToSteamCommand, Commands
+    );
+}</code></pre>
+
+            <hr class="my-8">
+
+            <h3 class="text-2xl font-bold mb-4">Step 5: Initialize in Your Editor Module</h3>
+            
+            <p class="mb-4 text-muted">Finally, create the menu when your editor module starts up:</p>
+
+            <pre class="mb-6"><code>class FRetroEditorModule : public IModuleInterface
+{
+public:
+    virtual void StartupModule() override
+    {
+        // Initialize custom menu
+        RetroMenu = FRetroMenu::CreateMenu();
+    }
+    
+    virtual void ShutdownModule() override
+    {
+        RetroMenu.Reset();
+    }
+
+private:
+    TSharedPtr&lt;FRetroMenu&gt; RetroMenu;
+};</code></pre>
+
+            <hr class="my-8">
+
+            <h3 class="text-2xl font-bold mb-4">Understanding VDF Files</h3>
+            
+            <p class="mb-4 text-muted">VDF (Valve Data File) files are configuration files that tell SteamCMD <strong>what to upload</strong> and <strong>where to publish it</strong>. You'll need two types of VDF files:</p>
+
+            <h4 class="text-xl font-semibold mb-3 mt-6">App Build Configuration</h4>
+            
+            <p class="mb-4 text-muted">The main configuration file defines your app ID, build description, and which branch to publish to:</p>
+
+            <pre class="mb-4"><code>"appbuild"
+{
+    "appid"       "4115780"
+    "desc"        "Retro Dev Build"
+    "buildoutput" "output"
+    "setlive"     "development"
+    "preview"     "0"
+    "local"       ""
+
+    "depots"
+    {
+        "4115781" "depot_4115781.vdf"
+    }
+}</code></pre>
+
+            <ul class="list-disc pl-6 mb-4 space-y-2 text-muted">
+                <li><code>appid</code>: Your Steam app ID</li>
+                <li><code>desc</code>: Description for this build (shows in Steam admin)</li>
+                <li><code>setlive</code>: Which branch to publish to (<code>development</code>, <code>public</code>, etc.)</li>
+                <li><code>depots</code>: List of depot configuration files to include</li>
+            </ul>
+
+            <h4 class="text-xl font-semibold mb-3 mt-6">Depot Configuration</h4>
+            
+            <p class="mb-4 text-muted">The depot file specifies which files to upload and where they're located:</p>
+
+            <pre class="mb-4"><code>"DepotBuildConfig"
+{
+    "DepotID" "4115781"
+    "ContentRoot" "..\..\Saved\StagedBuilds\Windows"
+    "FileMapping"
+    {
+        "LocalPath" "*"
+        "DepotPath" "."
+        "recursive" "1"
+    }
+    "FileExclusion" "*.pdb"
+}</code></pre>
+
+            <ul class="list-disc pl-6 mb-4 space-y-2 text-muted">
+                <li><code>DepotID</code>: Your depot ID (created in Steamworks)</li>
+                <li><code>ContentRoot</code>: Path to your packaged build directory</li>
+                <li><code>FileMapping</code>: Maps local files to Steam depot structure</li>
+                <li><code>FileExclusion</code>: Pattern for files to skip (like debug symbols)</li>
+            </ul>
+
+            <h4 class="text-xl font-semibold mb-3 mt-6">Multiple Branches</h4>
+            
+            <p class="mb-4 text-muted">Create separate app build files for different branches (development, staging, public). The only difference is typically the <code>setlive</code> value:</p>
+
+            <pre class="mb-6"><code>// app_dev.vdf
+"setlive" "development"
+
+// app_release.vdf
+"setlive" "public"</code></pre>
+
+            <p class="mb-6 text-muted">Store these VDF files in a <code>Tools/Steam</code> directory in your project. The relative paths in <code>ContentRoot</code> should point to your packaged build output.</p>
+
+            <hr class="my-8">
+
+            <h3 class="text-2xl font-bold mb-4">Setting Up Environment Variables</h3>
+            
+            <p class="mb-4 text-muted">To use the tool, set the <code>STEAM_PASSWORD</code> environment variable before launching the editor:</p>
+
+            <p class="mb-4 text-muted"><strong>Windows:</strong></p>
+            <pre class="mb-4"><code>setx STEAM_PASSWORD "your_password_here"</code></pre>
+
+            <p class="mb-4 text-muted"><strong>Linux/Mac:</strong></p>
+            <pre class="mb-6"><code>export STEAM_PASSWORD="your_password_here"</code></pre>
+
+            <hr class="my-8">
+
+            <h3 class="text-2xl font-bold mb-4">Key Features</h3>
+            
+            <ul class="list-disc pl-6 mb-6 space-y-2 text-muted">
+                <li><strong class="text-gray-200">Secure credential handling:</strong> Passwords never stored in project files or source control</li>
+                <li><strong class="text-gray-200">File browser integration:</strong> Native OS file dialogs for selecting VDF and SteamCMD paths</li>
+                <li><strong class="text-gray-200">Input validation:</strong> Clear error messages for missing or invalid configurations</li>
+                <li><strong class="text-gray-200">Default paths:</strong> Pre-configured paths for common project structures</li>
+                <li><strong class="text-gray-200">Status feedback:</strong> Visual indicators for upload progress and errors</li>
+                <li><strong class="text-gray-200">Detached process:</strong> SteamCMD runs in its own window, keeping the editor responsive</li>
+            </ul>
+
+            <hr class="my-8">
+
+            <h3 class="text-2xl font-bold mb-4">Conclusion</h3>
+            
+            <p class="mb-4 text-muted">This Steam upload tool demonstrates how <strong>Slate UI</strong> can create professional, integrated workflows within the Unreal Editor. By combining <strong>editor commands</strong>, <strong>custom menus</strong>, and <strong>process management</strong>, you can streamline repetitive tasks and reduce the chance of upload errors.</p>
+
+            <p class="mb-4 text-muted">This approach works well for:</p>
+            
+            <ul class="list-disc pl-6 mb-6 space-y-2 text-muted">
+                <li>Build automation workflows</li>
+                <li>Distribution pipelines requiring multiple upload targets</li>
+                <li>Teams that need consistent upload procedures</li>
+                <li>Projects with frequent Steam build iterations</li>
+            </ul>
+
+            <p class="mb-4 text-muted">The same pattern can be extended to handle other external tools like <strong>console devkits</strong>, <strong>itch.io uploads</strong>, or <strong>custom CDN deployments</strong>.</p>
+        </article>
+
+    </div>
+</main>
+
+</body>
+</html>
