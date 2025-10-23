@@ -3,6 +3,21 @@
 {% block title %}Journal - {{ config.title }}{% endblock %}
 
 {% block content %}
+<!-- Archive Sidebar - Fixed position overlay on the left -->
+<aside class="fixed left-8 top-32 w-48 hidden xl:block z-10">
+    <h3 class="text-lg font-semibold mb-3 text-muted">Archive</h3>
+    <ul class="space-y-1">
+        {% for page in section.pages | reverse %}
+        <li>
+            <a href="{{ page.permalink }}" 
+               class="text-sm text-muted hover:text-cyan-400 transition-colors {% if loop.first %}text-cyan-400 font-medium{% endif %}">
+                {{ page.title }}
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+</aside>
+
 <!-- Header -->
 <header class="pt-32 pb-20 px-8">
     <div class="max-w-5xl mx-auto">
@@ -12,39 +27,19 @@
 </header>
 
 <main class="px-8 pb-20">
-    <div class="max-w-7xl mx-auto relative">
-        <!-- Archive Sidebar - Positioned absolutely on the left -->
-        <aside class="absolute left-0 top-0 w-48">
-            <div class="sticky top-24">
-                <h3 class="text-lg font-semibold mb-3 text-muted">Archive</h3>
-                <ul class="space-y-1">
-                    {% for page in section.pages | reverse %}
-                    <li>
-                        <a href="{{ page.permalink }}" 
-                           class="text-sm text-muted hover:text-cyan-400 transition-colors {% if loop.last %}text-cyan-400 font-medium{% endif %}">
-                            {{ page.title }}
-                        </a>
-                    </li>
-                    {% endfor %}
-                </ul>
+    <div class="max-w-5xl mx-auto">
+        {% if section.pages %}
+        {% set latest = section.pages | last %}
+        <article class="section-card rounded-lg p-8">
+            <div class="mb-6">
+                <span class="text-muted">{{ latest.date | date(format="%B %Y") }}</span>
             </div>
-        </aside>
-        
-        <!-- Main Content Area - Full width with left margin -->
-        <div class="ml-56">
-            {% if section.pages %}
-            {% set latest = section.pages | last %}
-            <article class="section-card rounded-lg p-8">
-                <div class="mb-6">
-                    <span class="text-muted">{{ latest.date | date(format="%B %Y") }}</span>
-                </div>
-                <h2 class="text-4xl font-bold mb-8">{{ latest.title }}</h2>
-                <div class="journal-article-content">
-                    {{ latest.content | safe }}
-                </div>
-            </article>
-            {% endif %}
-        </div>
+            <h2 class="text-4xl font-bold mb-8">{{ latest.title }}</h2>
+            <div class="journal-article-content">
+                {{ latest.content | safe }}
+            </div>
+        </article>
+        {% endif %}
     </div>
 </main>
 
