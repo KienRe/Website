@@ -16,8 +16,8 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="components.js" defer></script>
-    <script src="journal-data.js" defer></script>
+    <script src="scripts/components.js" defer></script>
+    <script src="scripts/content-manager.js" defer></script>
     <style>
         html {
             overflow-y: scroll; /* Always show vertical scrollbar */
@@ -98,13 +98,11 @@
             <aside class="archive-sidebar rounded-lg p-6 w-64 flex-shrink-0 self-start sticky top-24">
                 <h3 class="text-xl font-bold mb-4">Archive</h3>
                 <ul id="journal-archive-list" class="space-y-1">
-                    <!-- Archive list will be populated by journal-data.js -->
                 </ul>
             </aside>
             
             <!-- Main Content Area -->
             <div class="flex-1" id="journal-content">
-                <!-- Content will be loaded by journal-data.js -->
             </div>
         </div>
     </div>
