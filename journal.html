@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>René Kienauer - Journal</title>
+    
+    <!-- CRITICAL: Set background immediately to prevent white flash -->
+    <style>
+        html, body {
+            background-color: #0f172a;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="components.js" defer></script>
+    <script src="journal-data.js" defer></script>
+    <style>
+        html {
+            overflow-y: scroll; /* Always show vertical scrollbar */
+        }
+    
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a;
+            color: #e2e8f0;
+            font-size: 18px;
+            line-height: 1.7;
+        }
+        
+        /* Matching dark theme styles */
+        .nav-link {
+            color: #94a3b8;
+            transition: color 0.2s ease;
+        }
+        
+        .nav-link:hover {
+            color: #22d3ee;
+        }
+        
+        .nav-link.active {
+            color: #e2e8f0;
+        }
+        
+        .accent-link {
+            color: #22d3ee;
+            transition: color 0.2s ease;
+        }
+        
+        .accent-link:hover {
+            color: #06b6d4;
+        }
+        
+        h1, h2, h3 {
+            color: #f1f5f9;
+        }
+        
+        .text-muted {
+            color: #94a3b8;
+        }
+        
+        .archive-sidebar {
+            background-color: #1e293b;
+            border: 1px solid #334155;
+        }
+        
+        /* Responsive layout */
+        @media (max-width: 1024px) {
+            .journal-layout {
+                flex-direction: column;
+            }
+            
+            .archive-sidebar {
+                width: 100% !important;
+                margin-bottom: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<site-nav current="journal"></site-nav>
+
+<!-- Header -->
+<page-header 
+  title="Journal" 
+  subtitle="Thoughts, updates, and reflections">
+</page-header>
+
+<main class="px-8 pb-20">
+    <div class="max-w-7xl mx-auto">
+        <div class="journal-layout flex gap-8">
+            <!-- Archive Sidebar -->
+            <aside class="archive-sidebar rounded-lg p-6 w-64 flex-shrink-0 self-start sticky top-24">
+                <h3 class="text-xl font-bold mb-4">Archive</h3>
+                <ul id="journal-archive-list" class="space-y-1">
+                    <!-- Archive list will be populated by journal-data.js -->
+                </ul>
+            </aside>
+            
+            <!-- Main Content Area -->
+            <div class="flex-1" id="journal-content">
+                <!-- Content will be loaded by journal-data.js -->
+            </div>
+        </div>
+    </div>
+</main>
+
+</body>
+</html>
