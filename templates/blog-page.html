@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page.title }} - {{ config.title }}{% endblock %}
+
+{% block content %}
+<!-- Header with back link -->
+<header class="pt-32 pb-20 px-8">
+    <div class="max-w-5xl mx-auto">
+        <a href="{{ get_url(path='@/blog/_index.md') }}" class="accent-link inline-flex items-center gap-2 mb-8" aria-label="Back to Blog">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
+            Back to Blog
+        </a>
+        <h1 class="text-5xl md:text-6xl font-bold mb-6">{{ page.title }}</h1>
+        <p class="text-xl text-muted">{{ page.date | date(format="%B %Y") }}</p>
+    </div>
+</header>
+
+<main class="px-8 pb-20">
+    <div class="max-w-5xl mx-auto">
+        <!-- Article content -->
+        <article class="section-card rounded-lg p-8 md:p-12">
+            {{ page.content | safe }}
+        </article>
+    </div>
+</main>
+
+<style>
+/* Blog post styling */
+article p {
+    margin-bottom: 1.5rem;
+    color: #e2e8f0;
+}
+
+article h3 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 2rem 0 1rem 0;
+    color: #f1f5f9;
+}
+
+article h4 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 1.5rem 0 0.75rem 0;
+    color: #f1f5f9;
+}
+
+article ol, article ul {
+    padding-left: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+article ol li {
+    margin-bottom: 0.75rem;
+    color: #94a3b8;
+}
+
+article ul li {
+    margin-bottom: 0.25rem;
+    color: #94a3b8;
+}
+
+article strong {
+    color: #f1f5f9;
+}
+
+article code {
+    font-family: 'Courier New', monospace;
+    color: #22d3ee;
+    background-color: #1e293b;
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
+}
+
+article pre {
+    background-color: #1e293b;
+    border: 1px solid #334155;
+    color: #e2e8f0;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+article pre code {
+    color: #e2e8f0;
+    background: none;
+    padding: 0;
+}
+
+article hr {
+    border-color: #334155;
+    margin: 2rem 0;
+}
+
+article blockquote {
+    border-left: 4px solid #22d3ee;
+    padding-left: 1rem;
+    margin: 1.5rem 0;
+    color: #94a3b8;
+    font-style: italic;
+}
+</style>
+{% endblock %}

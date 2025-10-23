@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}Journal - {{ config.title }}{% endblock %}
+
+{% block content %}
+<!-- Header -->
+<header class="pt-32 pb-20 px-8">
+    <div class="max-w-5xl mx-auto">
+        <h1 class="text-5xl md:text-6xl font-bold mb-6">Journal</h1>
+        <p class="text-xl text-muted">Thoughts, updates, and reflections</p>
+    </div>
+</header>
+
+<main class="px-8 pb-20">
+    <div class="max-w-7xl mx-auto relative">
+        <!-- Archive Sidebar - Positioned absolutely on the left -->
+        <aside class="absolute left-0 top-0 w-48">
+            <div class="sticky top-24">
+                <h3 class="text-lg font-semibold mb-3 text-muted">Archive</h3>
+                <ul class="space-y-1">
+                    {% for page in section.pages | reverse %}
+                    <li>
+                        <a href="{{ page.permalink }}" 
+                           class="text-sm text-muted hover:text-cyan-400 transition-colors {% if loop.last %}text-cyan-400 font-medium{% endif %}">
+                            {{ page.title }}
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </aside>
+        
+        <!-- Main Content Area - Full width with left margin -->
+        <div class="ml-56">
+            {% if section.pages %}
+            {% set latest = section.pages | last %}
+            <article class="section-card rounded-lg p-8">
+                <div class="mb-6">
+                    <span class="text-muted">{{ latest.date | date(format="%B %Y") }}</span>
+                </div>
+                <h2 class="text-4xl font-bold mb-8">{{ latest.title }}</h2>
+                <div class="journal-article-content">
+                    {{ latest.content | safe }}
+                </div>
+            </article>
+            {% endif %}
+        </div>
+    </div>
+</main>
+
+<style>
+/* Journal content styling */
+.journal-article-content p {
+    margin-bottom: 1rem;
+    color: #e2e8f0;
+}
+
+.journal-article-content h2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 1.5rem 0 1rem 0;
+    color: #f1f5f9;
+}
+
+.journal-article-content h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 1.25rem 0 0.75rem 0;
+    color: #f1f5f9;
+}
+
+.journal-article-content ul {
+    padding-left: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.journal-article-content ul li {
+    margin-bottom: 0.25rem;
+    color: #94a3b8;
+}
+
+.journal-article-content strong {
+    color: #f1f5f9;
+}
+
+.journal-article-content code {
+    font-family: 'Courier New', monospace;
+    color: #22d3ee;
+    background-color: #1e293b;
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
+}
+</style>
+{% endblock %}

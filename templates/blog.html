@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Blog - {{ config.title }}{% endblock %}
+
+{% block content %}
+
+<header class="pt-32 pb-20 px-8">
+    <div class="max-w-5xl mx-auto">
+        <h1 class="text-5xl md:text-6xl font-bold mb-6">Blog</h1>
+        <p class="text-xl text-muted">Collection of thoughts that might be useful to someone else then me</p>
+    </div>
+</header>
+
+<main class="px-8 pb-20">
+    <div class="max-w-5xl mx-auto">
+        {% for page in section.pages | reverse %}
+        <article class="blog-card rounded-lg p-8 mb-4">
+            <div class="mb-3 flex items-center justify-between">
+                <time datetime="{{ page.date }}" class="text-sm text-muted">{{ page.date | date(format="%B %Y") }}</time>
+                {% if page.taxonomies.tags %}
+                <div class="flex gap-2 flex-wrap">
+                    {% for tag in page.taxonomies.tags %}
+                    <span class="tech-tag">{{ tag }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            <h2 class="text-3xl font-bold mb-4">
+                <a href="{{ page.permalink }}" class="hover:text-cyan-400 transition-colors">
+                    {{ page.title }}
+                </a>
+            </h2>
+            <p class="text-muted mb-6">{{ page.extra.excerpt }}</p>
+            <a href="{{ page.permalink }}" class="accent-link font-medium inline-flex items-center gap-2">
+                Read article
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+            </a>
+        </article>
+        {% endfor %}
+    </div>
+</main>
+{% endblock %}
