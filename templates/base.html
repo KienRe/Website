@@ -107,6 +107,7 @@
             border-radius: 0.5rem;
         }
     </style>
+    {% block head %}{% endblock %}
 </head>
 <body>
     <nav class="absolute top-0 right-0 p-8 z-50" aria-label="Main navigation">
@@ -121,11 +122,15 @@
                {% if current_path is starting_with('/blog') %}aria-current="page"{% endif %}>
                 Blog
             </a>
-            <a href="{{ get_url(path='@/journal/_index.md') }}" 
-               class="nav-link {% if current_path is starting_with('/journal') %}active{% endif %} font-medium"
-               {% if current_path is starting_with('/journal') %}aria-current="page"{% endif %}>
-                Journal
-            </a>
+            {% set journal_section = get_section(path="journal/_index.md") %}
+            {% if journal_section.pages %}
+              {% set latest = journal_section.pages | first %}
+              <a href="{{ latest.permalink }}" 
+                 class="nav-link {% if current_path is starting_with('/journal') %}active{% endif %} font-medium"
+                 {% if current_path is starting_with('/journal') %}aria-current="page"{% endif %}>
+                  Journal
+              </a>
+            {% endif %}
         </div>
     </nav>
     {% block content %}{% endblock %}

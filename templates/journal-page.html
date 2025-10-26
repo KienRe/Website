@@ -3,6 +3,77 @@
 {% block title %}{{ page.title }} - {{ config.title }}{% endblock %}
 
 {% block content %}
+<!-- Mobile Archive Toggle Button -->
+<button id="archive-toggle" class="absolute left-8 top-8 z-20 xl:hidden text-muted hover:text-cyan-400 transition-colors">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+    </svg>
+</button>
+
+<!-- Archive Sidebar -->
+<aside id="archive-sidebar" class="absolute left-8 top-32 w-48 z-10 hidden xl:block">
+    <h3 class="text-lg font-semibold mb-3 text-muted">Archive</h3>
+    <ul class="space-y-1">
+        {% set journal_section = get_section(path="journal/_index.md") %}
+        {% for journal_page in journal_section.pages | reverse %}
+        <li>
+            <a href="{{ journal_page.permalink }}" 
+               class="text-sm text-muted hover:text-cyan-400 transition-colors {% if journal_page.slug == page.slug %}text-cyan-400 font-medium{% endif %}">
+                {{ journal_page.title }}
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+</aside>
+
+<!-- Mobile Archive Overlay -->
+<div id="archive-overlay" class="absolute inset-0 bg-black bg-opacity-50 z-30 hidden xl:hidden"></div>
+<aside id="archive-mobile" class="absolute left-0 top-0 bottom-0 w-64 section-card z-40 transform -translate-x-full transition-transform duration-300 xl:hidden overflow-y-auto border-r border-cyan-400/20">
+    <div class="p-8">
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-lg font-semibold text-muted">Archive</h3>
+            <button id="archive-close" class="text-muted hover:text-cyan-400 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        <ul class="space-y-2">
+            {% set journal_section = get_section(path="journal/_index.md") %}
+            {% for journal_page in journal_section.pages | reverse %}
+            <li>
+                <a href="{{ journal_page.permalink }}" 
+                   class="block text-sm text-muted hover:text-cyan-400 transition-colors py-1 {% if journal_page.slug == page.slug %}text-cyan-400 font-medium{% endif %}">
+                    {{ journal_page.title }}
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</aside>
+
+<script>
+const toggle = document.getElementById('archive-toggle');
+const overlay = document.getElementById('archive-overlay');
+const mobile = document.getElementById('archive-mobile');
+const close = document.getElementById('archive-close');
+
+toggle?.addEventListener('click', () => {
+    mobile.classList.remove('-translate-x-full');
+    overlay.classList.remove('hidden');
+});
+
+close?.addEventListener('click', () => {
+    mobile.classList.add('-translate-x-full');
+    overlay.classList.add('hidden');
+});
+
+overlay?.addEventListener('click', () => {
+    mobile.classList.add('-translate-x-full');
+    overlay.classList.add('hidden');
+});
+</script>
+
 <!-- Header -->
 <header class="pt-32 pb-20 px-8">
     <div class="max-w-5xl mx-auto">
@@ -12,26 +83,7 @@
 </header>
 
 <main class="px-8 pb-20">
-    <div class="max-w-5xl mx-auto relative">
-        <!-- Archive Sidebar - Fixed position overlay on the left -->
-        <aside class="absolute left-8 top-32 w-48 hidden xl:block">
-            <div class="sticky top-32">
-                <h3 class="text-lg font-semibold mb-3 text-muted">Archive</h3>
-                <ul class="space-y-1">
-                    {% set journal_section = get_section(path="journal/_index.md") %}
-                    {% for journal_page in journal_section.pages | reverse %}
-                    <li>
-                        <a href="{{ journal_page.permalink }}" 
-                           class="text-sm text-muted hover:text-cyan-400 transition-colors {% if journal_page.slug == page.slug %}text-cyan-400 font-medium{% endif %}">
-                            {{ journal_page.title }}
-                        </a>
-                    </li>
-                    {% endfor %}
-                </ul>
-            </div>
-        </aside>
-        
-        <!-- Main Content Area - Centered, unaffected by sidebar -->
+    <div class="max-w-5xl mx-auto">
         <article class="section-card rounded-lg p-8">
             <div class="mb-6">
                 <span class="text-muted">{{ page.date | date(format="%B %Y") }}</span>
