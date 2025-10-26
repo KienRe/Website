@@ -3,14 +3,14 @@ name: Zola on GitHub Pages
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   build:
     name: Publish site
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout main
+      - name: Checkout master
         uses: actions/checkout@v4
       
       - name: Build and deploy
