@@ -117,6 +117,7 @@
                {% if current_path == '/' %}aria-current="page"{% endif %}>
                 Portfolio
             </a>
+            <!--
             <a href="{{ get_url(path='@/blog/_index.md') }}" 
                class="nav-link {% if current_path is starting_with('/blog') %}active{% endif %} font-medium"
                {% if current_path is starting_with('/blog') %}aria-current="page"{% endif %}>
@@ -130,6 +131,7 @@
                  {% if current_path is starting_with('/journal') %}aria-current="page"{% endif %}>
                   Journal
               </a>
+              -->
             {% endif %}
         </div>
     </nav>
