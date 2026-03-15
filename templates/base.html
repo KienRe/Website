@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{{ config.title }}{% endblock %}</title>
     <meta name="description" content="{{ config.description }}">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='.9em' font-size='28' font-family='system-ui' fill='%2322d3ee'>R</text></svg>">
     
     <!-- Set background to prevent white flash when loading -->
     <style>
@@ -109,7 +110,7 @@
     </style>
     {% block head %}{% endblock %}
     <!-- Privacy-friendly analytics by Plausible -->
-    <script async src="https://analytics.keenhour.eu/js/pa-gaGkA7K6KZJVIZFhB1P1G.js"></script>
+    <script async src="https://plausible.keenhour.eu/js/pa-gaGkA7K6KZJVIZFhB1P1G.js"></script>
     <script>
       window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
       plausible.init()
