@@ -109,12 +109,13 @@
         }
     </style>
     {% block head %}{% endblock %}
-    <!-- Privacy-friendly analytics by Plausible -->
-    <script async src="https://plausible.keenhour.eu/js/pa-gaGkA7K6KZJVIZFhB1P1G.js"></script>
-    <script>
-      window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
-      plausible.init()
-    </script>
+	<!-- Privacy-friendly analytics by Plausible -->
+	<script async src="https://plausible.keenhour.eu/js/pa-gaGkA7K6KZJVIZFhB1P1G.js"></script>
+	<script>
+	window.plausible = window.plausible || function () { (plausible.q = plausible.q || []).push(arguments) };
+	plausible.init = plausible.init || function (i) { plausible.o = i || {} };
+	plausible.init({ endpoint: "https://plausible.keenhour.eu/api/event" });
+	</script>
 </head>
 <body>
     <nav class="absolute top-0 right-0 p-8 z-50" aria-label="Main navigation">
