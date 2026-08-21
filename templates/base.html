@@ -127,16 +127,16 @@
             </a>
             <!--
             <a href="{{ get_url(path='@/blog/_index.md') }}" 
-               class="nav-link {% if current_path is starting_with('/blog') %}active{% endif %} font-medium"
-               {% if current_path is starting_with('/blog') %}aria-current="page"{% endif %}>
+               class="nav-link {% if current_path is starting_with(pat='/blog') %}active{% endif %} font-medium"
+               {% if current_path is starting_with(pat='/blog') %}aria-current="page"{% endif %}>
                 Blog
             </a>
             {% set journal_section = get_section(path="journal/_index.md") %}
             {% if journal_section.pages %}
               {% set latest = journal_section.pages | first %}
               <a href="{{ latest.permalink }}" 
-                 class="nav-link {% if current_path is starting_with('/journal') %}active{% endif %} font-medium"
-                 {% if current_path is starting_with('/journal') %}aria-current="page"{% endif %}>
+                 class="nav-link {% if current_path is starting_with(pat='/journal') %}active{% endif %} font-medium"
+                 {% if current_path is starting_with(pat='/journal') %}aria-current="page"{% endif %}>
                   Journal
               </a>
               -->

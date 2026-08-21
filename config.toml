@@ -7,11 +7,10 @@ compile_sass = false
 # Whether to build a search index to be used later on by a JavaScript library
 build_search_index = true
 
-[markdown]
-# Whether to do syntax highlighting
-# Theme can be customised by setting the `highlight_theme` variable to a theme supported by Zola
-highlight_code = true
-highlight_theme = "base16-ocean-dark"
+[markdown.highlighting]
+# Replaces the old highlight_code / highlight_theme keys (removed in Zola 0.22+)
+# base16-ocean-dark is gone; material-theme-ocean is the closest built-in dark theme
+theme = "material-theme-ocean"
 
 [extra]
 title = "René Kienauer"
