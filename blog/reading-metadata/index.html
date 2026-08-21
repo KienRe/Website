@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reading Metadata Specifiers in a Packaged Build in Unreal - </title>
+    <meta name="description" content="">
+    <link rel="preload" href="/fonts/inter-latin-400.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/inter-latin-700.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="/css/app.css">
+    <style>
+        html, body { background-color: #0f172a; }
+    </style>
+    
+	<!-- Privacy-friendly analytics by Plausible -->
+	<script async src="https://plausible.keenhour.eu/js/pa-gaGkA7K6KZJVIZFhB1P1G.js"></script>
+	<script>
+	window.plausible = window.plausible || function () { (plausible.q = plausible.q || []).push(arguments) };
+	plausible.init = plausible.init || function (i) { plausible.o = i || {} };
+	plausible.init({ endpoint: "https://plausible.keenhour.eu/api/event" });
+	</script>
+</head>
+<body>
+    <nav class="absolute top-0 right-0 p-8 z-50" aria-label="Main navigation">
+        <div class="flex gap-8">
+            <a href="https://rkien.eu/" 
+               class="nav-link  font-medium"
+               >
+                Portfolio
+            </a>
+            <!--
+            <a href="https://rkien.eu/blog/" 
+               class="nav-link active font-medium"
+               aria-current="page">
+                Blog
+            </a>
+            
+            
+              
+              <a href="https://rkien.eu/journal/2024-03-01/" 
+                 class="nav-link  font-medium"
+                 >
+                  Journal
+              </a>
+              -->
+            
+        </div>
+    </nav>
+    
+<!-- Header with back link -->
+<header class="pt-32 pb-20 px-8">
+    <div class="max-w-5xl mx-auto">
+        <a href="https://rkien.eu/blog/" class="accent-link inline-flex items-center gap-2 mb-8" aria-label="Back to Blog">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
+            Back to Blog
+        </a>
+        <h1 class="text-5xl md:text-6xl font-bold mb-6">Reading Metadata Specifiers in a Packaged Build in Unreal</h1>
+        <p class="text-xl text-muted">December 2024</p>
+    </div>
+</header>
+
+<main class="px-8 pb-20">
+    <div class="max-w-5xl mx-auto">
+        <!-- Article content -->
+        <article class="section-card rounded-lg p-8 md:p-12">
+            <p>One common challenge in Unreal Engine development is accessing <strong>metadata specifiers</strong> (custom function or property metadata) in a packaged build. By default, metadata is mostly accessible in-editor, but if you want this information at runtime or in the shipped game, you need a workflow to <strong>export, package, and load metadata automatically</strong>. This post walks through a robust solution using a combination of <strong>commandlets, runtime dependencies, and non-asset directories</strong>.</p>
+<hr />
+<h2 id="understanding-packaging-in-unreal">Understanding Packaging in Unreal</h2>
+<p>Before diving into the solution, it's helpful to understand the Unreal build process:</p>
+<ol>
+<li><strong>UHT (Unreal Header Tool)</strong> runs first during compilation. It generates code based on UCLASS, USTRUCT, UFUNCTION, and other macros. This ensures metadata specifiers and reflection data exist in your code.</li>
+<li><strong>UBT (Unreal Build Tool)</strong> then compiles your C++ modules and engine code.</li>
+<li><strong>UAT (Unreal Automation Tool)</strong> handles the higher-level build workflow:
+<ul>
+<li>Builds and compiles the project.</li>
+<li>Runs cook and package steps (<code>BuildCookRun</code>).</li>
+<li>Stages files into the packaged directory structure.</li>
+</ul>
+</li>
+</ol>
+<p><strong>Key insight:</strong> When pressing <strong>Package</strong> in the editor, UAT is triggered behind the scenes, but it doesn't automatically know about any custom post-package steps you want. This is why adding metadata export directly in the <strong>Target.cs pre-build step</strong> is useful: it runs after compilation but before UAT stages files, ensuring your metadata is always up-to-date.</p>
+<hr />
+<h2 id="step-1-export-metadata-using-a-commandlet">Step 1: Export Metadata Using a Commandlet</h2>
+<p>We created a <code>UMetadataSubsystem</code> to handle collecting function metadata and exporting it to JSON. By wrapping the export logic in a <strong>commandlet</strong>, we can run it during the build process.</p>
+<pre class="giallo" style="color: #BABED8; background-color: #0F111A;" ><code data-lang="cpp"><span class="giallo-l"><span style="color: #C792EA;">void</span><span style="color: #FFCB6B;"> UMetadataSubsystem</span><span style="color: #89DDFF;">::</span><span style="color: #82AAFF;">ExportAllMetadata</span><span style="color: #89DDFF;">()</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">{</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;font-style: italic;">#if</span><span style="color: #82AAFF;"> WITH_EDITOR</span></span>
+<span class="giallo-l"><span style="color: #FFCB6B;">    TArray</span><span style="color: #89DDFF;">&lt;</span><span style="color: #FFCB6B;">FFunctionMetadata</span><span style="color: #89DDFF;">&gt;</span><span> AllMetadata</span><span style="color: #89DDFF;">;</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #89DDFF;font-style: italic;">    for</span><span style="color: #89DDFF;"> (</span><span>TObjectIterator</span><span style="color: #89DDFF;">&lt;</span><span>UClass</span><span style="color: #89DDFF;">&gt;</span><span> ClassIt</span><span style="color: #89DDFF;">;</span><span> ClassIt</span><span style="color: #89DDFF;">; ++</span><span>ClassIt</span><span style="color: #89DDFF;">)</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">    {</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;font-style: italic;">        for</span><span style="color: #89DDFF;"> (</span><span style="color: #FFCB6B;">TFieldIterator</span><span style="color: #89DDFF;">&lt;</span><span style="color: #FFCB6B;">UFunction</span><span style="color: #89DDFF;">&gt;</span><span style="color: #82AAFF;"> FuncIt</span><span style="color: #89DDFF;">(*</span><span>ClassIt</span><span style="color: #89DDFF;">);</span><span> FuncIt</span><span style="color: #89DDFF;">; ++</span><span>FuncIt</span><span style="color: #89DDFF;">)</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">        {</span></span>
+<span class="giallo-l"><span style="color: #FFCB6B;">            UFunction</span><span style="color: #C792EA;">*</span><span> Function</span><span style="color: #89DDFF;"> = *</span><span>FuncIt</span><span style="color: #89DDFF;">;</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;font-style: italic;">            if</span><span style="color: #89DDFF;"> (</span><span style="color: #82AAFF;">IsFunctionInModule</span><span style="color: #89DDFF;">(</span><span>Function</span><span style="color: #89DDFF;">))</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">            {</span></span>
+<span class="giallo-l"><span style="color: #FFCB6B;">                FFunctionMetadata</span><span style="color: #82AAFF;"> Metadata</span><span style="color: #89DDFF;">(</span><span>Function</span><span style="color: #89DDFF;">);</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;font-style: italic;">                if</span><span style="color: #89DDFF;"> (!</span><span>Metadata</span><span style="color: #89DDFF;">.</span><span style="color: #82AAFF;">IsEmpty</span><span style="color: #89DDFF;">())</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">                {</span></span>
+<span class="giallo-l"><span>                    AllMetadata</span><span style="color: #89DDFF;">.</span><span style="color: #82AAFF;">Add</span><span style="color: #89DDFF;">(</span><span>Metadata</span><span style="color: #89DDFF;">);</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">                }</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">            }</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">        }</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">    }</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #FFCB6B;">    FString</span><span> JsonString</span><span style="color: #89DDFF;">;</span></span>
+<span class="giallo-l"><span style="color: #FFCB6B;">    TArray</span><span style="color: #89DDFF;">&lt;</span><span style="color: #FFCB6B;">TSharedPtr</span><span style="color: #89DDFF;">&lt;</span><span style="color: #FFCB6B;">FJsonValue</span><span style="color: #89DDFF;">&gt;&gt;</span><span> JsonArray</span><span style="color: #89DDFF;">;</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;font-style: italic;">    for</span><span style="color: #89DDFF;"> (</span><span style="color: #C792EA;">const</span><span style="color: #FFCB6B;"> FFunctionMetadata</span><span style="color: #C792EA;">&amp;</span><span> Metadata</span><span style="color: #89DDFF;"> :</span><span> AllMetadata</span><span style="color: #89DDFF;">)</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">    {</span></span>
+<span class="giallo-l"><span>        JsonArray</span><span style="color: #89DDFF;">.</span><span style="color: #82AAFF;">Add</span><span style="color: #89DDFF;">(</span><span style="color: #82AAFF;">MakeShared</span><span style="color: #89DDFF;">&lt;</span><span style="color: #FFCB6B;">FJsonValueObject</span><span style="color: #89DDFF;">&gt;(</span></span>
+<span class="giallo-l"><span style="color: #FFCB6B;">            FJsonObjectConverter</span><span style="color: #89DDFF;">::</span><span style="color: #82AAFF;">UStructToJsonObject</span><span style="color: #89DDFF;">(</span><span>Metadata</span><span style="color: #89DDFF;">)</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">        ));</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">    }</span></span>
+<span class="giallo-l"><span style="color: #C792EA;">    const</span><span style="color: #FFCB6B;"> TSharedRef</span><span style="color: #89DDFF;">&lt;</span><span style="color: #FFCB6B;">TJsonWriter</span><span style="color: #89DDFF;">&lt;&gt;&gt;</span><span> Writer</span><span style="color: #89DDFF;"> =</span><span style="color: #FFCB6B;"> TJsonWriterFactory</span><span style="color: #89DDFF;">&lt;&gt;::</span><span style="color: #82AAFF;">Create</span><span style="color: #89DDFF;">(&amp;</span><span>JsonString</span><span style="color: #89DDFF;">);</span></span>
+<span class="giallo-l"><span style="color: #FFCB6B;">    FJsonSerializer</span><span style="color: #89DDFF;">::</span><span style="color: #82AAFF;">Serialize</span><span style="color: #89DDFF;">(</span><span>JsonArray</span><span style="color: #89DDFF;">,</span><span> Writer</span><span style="color: #89DDFF;">);</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #FFCB6B;">    FFileHelper</span><span style="color: #89DDFF;">::</span><span style="color: #82AAFF;">SaveStringToFile</span><span style="color: #89DDFF;">(</span><span>JsonString</span><span style="color: #89DDFF;">, *</span><span style="color: #82AAFF;">GetMetadataFilePath</span><span style="color: #89DDFF;">());</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;font-style: italic;">#endif</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">}</span></span></code></pre>
+<p>This generates a JSON file (<code>Functions.meta.json</code>) in a predictable project folder (<code>Content/Metadata</code>).</p>
+<hr />
+<h2 id="step-2-automate-metadata-generation-during-build">Step 2: Automate Metadata Generation During Build</h2>
+<p>In your <code>Game.Target.cs</code>, add a <strong>pre-build step</strong> to run the commandlet before packaging:</p>
+<pre class="giallo" style="color: #BABED8; background-color: #0F111A;" ><code data-lang="cpp"><span class="giallo-l"><span>PreBuildSteps</span><span style="color: #89DDFF;">.</span><span style="color: #82AAFF;">Add</span><span style="color: #89DDFF;">(&quot;</span><span style="color: #C3E88D;">echo Running ExportMetadataCommandlet...</span><span style="color: #89DDFF;">&quot;);</span></span>
+<span class="giallo-l"><span>PreBuildSteps</span><span style="color: #89DDFF;">.</span><span style="color: #82AAFF;">Add</span><span style="color: #89DDFF;">(&quot;</span><span>\&quot;</span><span style="color: #C3E88D;">$(EngineDir)/Binaries/Win64/UnrealEditor-Cmd.exe</span><span>\&quot; \&quot;</span><span style="color: #C3E88D;">$(ProjectFile)</span><span>\&quot;</span><span style="color: #C3E88D;"> -run=ExportMetadata -unattended</span><span style="color: #89DDFF;">&quot;);</span></span></code></pre>
+<p>This ensures that every time you <strong>compile or package</strong>, the metadata JSON is up-to-date <strong>before UAT stages files</strong>.</p>
+<hr />
+<h2 id="step-3-stage-metadata-in-packaged-builds">Step 3: Stage Metadata in Packaged Builds</h2>
+<p>To include the metadata in the packaged game:</p>
+<ol>
+<li>Add the directory to <strong>"Additional Non-Asset Directories to Copy"</strong> in Project Settings:</li>
+</ol>
+<pre class="giallo" style="color: #BABED8; background-color: #0F111A;" ><code data-lang="ini"><span class="giallo-l"><span>+</span><span style="color: #F07178;">DirectoriesToAlwaysStageAsNonUFS</span><span style="color: #89DDFF;">=</span><span>(</span><span style="color: #F07178;">Path</span><span style="color: #89DDFF;">=&quot;</span><span style="color: #C3E88D;">Metadata</span><span style="color: #89DDFF;">&quot;</span><span>)</span></span></code></pre>
+<ol start="2">
+<li>The JSON files will now be staged to <code>Content/Metadata</code> in the packaged build.</li>
+<li>At runtime, the <code>UMetadataSubsystem</code> can <strong>load the JSON</strong>:</li>
+</ol>
+<pre class="giallo" style="color: #BABED8; background-color: #0F111A;" ><code data-lang="cpp"><span class="giallo-l"><span style="color: #C792EA;">void</span><span style="color: #FFCB6B;"> UMetadataSubsystem</span><span style="color: #89DDFF;">::</span><span style="color: #82AAFF;">LoadMetadata</span><span style="color: #89DDFF;">()</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">{</span></span>
+<span class="giallo-l"><span style="color: #C792EA;">    const</span><span style="color: #FFCB6B;"> FString</span><span> FilePath</span><span style="color: #89DDFF;"> =</span><span style="color: #82AAFF;"> GetMetadataFilePath</span><span style="color: #89DDFF;">();</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;font-style: italic;">    if</span><span style="color: #89DDFF;"> (!</span><span style="color: #FFCB6B;">FPaths</span><span style="color: #89DDFF;">::</span><span style="color: #82AAFF;">FileExists</span><span style="color: #89DDFF;">(</span><span>FilePath</span><span style="color: #89DDFF;">))</span><span style="color: #89DDFF;font-style: italic;"> return</span><span style="color: #89DDFF;">;</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #FFCB6B;">    TArray</span><span style="color: #89DDFF;">&lt;</span><span style="color: #FFCB6B;">FFunctionMetadata</span><span style="color: #89DDFF;">&gt;</span><span> LoadedMetadata</span><span style="color: #89DDFF;">;</span></span>
+<span class="giallo-l"><span style="color: #FFCB6B;">    FString</span><span> JsonString</span><span style="color: #89DDFF;">;</span></span>
+<span class="giallo-l"><span style="color: #FFCB6B;">    FFileHelper</span><span style="color: #89DDFF;">::</span><span style="color: #82AAFF;">LoadFileToString</span><span style="color: #89DDFF;">(</span><span>JsonString</span><span style="color: #89DDFF;">, *</span><span>FilePath</span><span style="color: #89DDFF;">);</span></span>
+<span class="giallo-l"><span style="color: #FFCB6B;">    FJsonObjectConverter</span><span style="color: #89DDFF;">::</span><span style="color: #82AAFF;">JsonArrayStringToUStruct</span><span style="color: #89DDFF;">(</span><span>JsonString</span><span style="color: #89DDFF;">, &amp;</span><span>LoadedMetadata</span><span style="color: #89DDFF;">);</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #89DDFF;font-style: italic;">    for</span><span style="color: #89DDFF;"> (</span><span style="color: #C792EA;">const</span><span style="color: #FFCB6B;"> FFunctionMetadata</span><span style="color: #C792EA;">&amp;</span><span> Metadata</span><span style="color: #89DDFF;"> :</span><span> LoadedMetadata</span><span style="color: #89DDFF;">)</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">    {</span></span>
+<span class="giallo-l"><span>        FunctionMetadataCache</span><span style="color: #89DDFF;">.</span><span style="color: #82AAFF;">Add</span><span style="color: #89DDFF;">(</span><span style="color: #82AAFF;">FName</span><span style="color: #89DDFF;">(*</span><span>Metadata</span><span style="color: #89DDFF;">.</span><span>FunctionName</span><span style="color: #89DDFF;">),</span><span> Metadata</span><span style="color: #89DDFF;">);</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">    }</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">}</span></span></code></pre>
+<hr />
+<h2 id="step-4-avoid-polluting-source-control">Step 4: Avoid Polluting Source Control</h2>
+<p>Since the JSON files are regenerated on every build, add them to <code>.p4ignore</code> or <code>.gitignore</code>:</p>
+<pre class="giallo" style="color: #BABED8; background-color: #0F111A;" ><code data-lang="plain"><span class="giallo-l"><span># Ignore generated metadata JSON files</span></span>
+<span class="giallo-l"><span>*meta.json</span></span>
+<span class="giallo-l"><span>Saved/Metadata/*meta.json</span></span></code></pre>
+<hr />
+<h2 id="why-this-works">Why This Works</h2>
+<ul>
+<li><strong>Pre-build commandlet:</strong> Ensures JSON is generated after compilation but <strong>before UAT stages files</strong>.</li>
+<li><strong>Non-asset staging:</strong> Ensures the JSON is copied into the packaged game.</li>
+<li><strong>Runtime loading:</strong> Lets your game access metadata specifiers in packaged builds.</li>
+<li><strong>Editor-friendly:</strong> Simply pressing <strong>Package</strong> triggers everything automatically.</li>
+</ul>
+<hr />
+<h2 id="conclusion">Conclusion</h2>
+<p>By combining a <strong>commandlet</strong>, <strong>pre-build steps</strong>, and <strong>non-asset staging</strong>, you can seamlessly expose editor metadata to packaged builds. Understanding the <strong>UHT → UBT → UAT pipeline</strong> was key to ensuring your metadata is always up-to-date and correctly staged.</p>
+<p>This workflow is perfect for:</p>
+<ul>
+<li>AI systems that need function metadata.</li>
+<li>Runtime introspection.</li>
+<li>Debugging or gameplay systems requiring metadata at runtime.</li>
+</ul>
+
+        </article>
+    </div>
+</main>
+
+<style>
+/* Blog post styling */
+article p {
+    margin-bottom: 1.5rem;
+    color: #e2e8f0;
+}
+
+article h3 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 2rem 0 1rem 0;
+    color: #f1f5f9;
+}
+
+article h4 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 1.5rem 0 0.75rem 0;
+    color: #f1f5f9;
+}
+
+article ol, article ul {
+    padding-left: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+article ol li {
+    margin-bottom: 0.75rem;
+    color: #94a3b8;
+}
+
+article ul li {
+    margin-bottom: 0.25rem;
+    color: #94a3b8;
+}
+
+article strong {
+    color: #f1f5f9;
+}
+
+article code {
+    font-family: 'Courier New', monospace;
+    color: #22d3ee;
+    background-color: #1e293b;
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
+}
+
+article pre {
+    background-color: #1e293b;
+    border: 1px solid #334155;
+    color: #e2e8f0;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+article pre code {
+    color: #e2e8f0;
+    background: none;
+    padding: 0;
+}
+
+article hr {
+    border-color: #334155;
+    margin: 2rem 0;
+}
+
+article blockquote {
+    border-left: 4px solid #22d3ee;
+    padding-left: 1rem;
+    margin: 1.5rem 0;
+    color: #94a3b8;
+    font-style: italic;
+}
+</style>
+
+    <script src="/js/lazy-video.js" defer></script>
+</body>
+</html>

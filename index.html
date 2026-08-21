@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <meta name="description" content="">
+    <link rel="preload" href="/fonts/inter-latin-400.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/inter-latin-700.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="/css/app.css">
+    <style>
+        html, body { background-color: #0f172a; }
+    </style>
+    
+<link rel="preload" as="image" href="/images/me.webp" type="image/webp">
+
+	<!-- Privacy-friendly analytics by Plausible -->
+	<script async src="https://plausible.keenhour.eu/js/pa-gaGkA7K6KZJVIZFhB1P1G.js"></script>
+	<script>
+	window.plausible = window.plausible || function () { (plausible.q = plausible.q || []).push(arguments) };
+	plausible.init = plausible.init || function (i) { plausible.o = i || {} };
+	plausible.init({ endpoint: "https://plausible.keenhour.eu/api/event" });
+	</script>
+</head>
+<body>
+    <nav class="absolute top-0 right-0 p-8 z-50" aria-label="Main navigation">
+        <div class="flex gap-8">
+            <a href="https://rkien.eu/" 
+               class="nav-link active font-medium"
+               aria-current="page">
+                Portfolio
+            </a>
+            <!--
+            <a href="https://rkien.eu/blog/" 
+               class="nav-link  font-medium"
+               >
+                Blog
+            </a>
+            
+            
+              
+              <a href="https://rkien.eu/journal/2024-03-01/" 
+                 class="nav-link  font-medium"
+                 >
+                  Journal
+              </a>
+              -->
+            
+        </div>
+    </nav>
+    
+<!-- Simplified header with better typography -->
+<header class="pt-32 pb-20 px-8">
+    <div class="max-w-5xl mx-auto">
+        <h1 class="text-5xl md:text-6xl font-bold mb-6">René Kienauer</h1>
+        <p class="text-xl text-muted">Gameplay Programmer</p>
+    </div>
+</header>
+
+<!-- Added intro paragraph after header -->
+<div class="px-8 -mt-12 mb-12">
+    <div class="max-w-5xl mx-auto">
+    </div>
+</div>
+
+<main class="px-8 pb-20">
+    <div class="max-w-5xl mx-auto space-y-24">
+
+<!-- Redesigned intro section with better layout -->
+<section>
+    <div class="section-card rounded-lg p-8">
+        <div class="md:flex gap-8 items-center">
+            <picture>
+                <source type="image/webp" srcset="/images/me.webp">
+                <img src="/images/me.jpg" alt="René Kienauer" width="144" height="144" loading="eager" decoding="async" class="w-36 h-36 rounded-full mb-6 md:mb-0 flex-shrink-0">
+            </picture>
+            <div class="space-y-4">
+                <p>
+                    I'm René, a game developer from Austria who loves creating games.
+                </p>        
+                <p>
+                    Know my way around all things Unreal and some more.
+                </p> 				
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Redesigned timeline with cleaner visual hierarchy -->
+<section>
+    <div class="section-card rounded-lg p-8">
+        <div class="space-y-8">
+            <div class="flex gap-4">
+                <div class="flex flex-col items-center">
+                    <span class="w-3 h-3 accent-dot rounded-full mt-2"></span>
+                    <div class="w-px bg-gray-700 flex-1 mt-2"></div>
+                </div>
+                <div class="flex-1 pb-4">
+                    <div class="text-sm text-muted mb-1">2025 - Present</div>
+                    <h3 class="text-xl font-semibold mb-2">Founder - False Wall</h3>
+                    <p class="text-muted">
+                        Working on Cursebreakers, a first-person coop dungeon cralwer in UE5
+                    </p>
+                </div>
+            </div>
+            
+            <div class="flex gap-4">
+                <div class="flex flex-col items-center">
+                    <span class="w-3 h-3 accent-dot rounded-full mt-2"></span>
+                    <div class="w-px bg-gray-700 flex-1 mt-2"></div>
+                </div>
+                <div class="flex-1 pb-4">
+                    <div class="text-sm text-muted mb-1">2020/03 - 2024/09</div>
+                    <h3 class="text-xl font-semibold mb-2">Game Programmer - Strange Horizons</h3>
+                    <p class="text-muted">
+                        Created and shipped a multiplayer survival game in UE5
+                    </p>
+                </div>
+            </div>
+            
+            <div class="flex gap-4">
+                <div class="flex flex-col items-center">
+                    <span class="w-3 h-3 accent-dot rounded-full mt-2"></span>
+                    <div class="w-px bg-gray-700 flex-1 mt-2"></div>
+                </div>
+                <div class="flex-1 pb-4">
+                    <div class="text-sm text-muted mb-1">2019/02 - 2019/12</div>
+                    <h3 class="text-xl font-semibold mb-2">Junior Game Programmer - d3t Limited</h3>
+                    <p class="text-muted">
+                        Helped port UE4 racing simulation Assetto Corsa to PS4 and Xbox One
+                    </p>
+                </div>
+            </div>
+            
+            <div class="flex gap-4">
+                <div class="flex flex-col items-center">
+                    <span class="w-3 h-3 accent-dot rounded-full mt-2"></span>
+                    <div class="w-px bg-gray-700 flex-1 mt-2"></div>
+                </div>
+                <div class="flex-1 pb-4">
+                    <div class="text-sm text-muted mb-1">2016 - 2018</div>
+                    <h3 class="text-xl font-semibold mb-2">Games Programming Diploma - SAE Institute Vienna</h3>
+                    <p class="text-muted">
+                        Learned the foundations of game development and honed rapid prototyping and team collaboration skills through multiple game jams
+                    </p>
+                </div>
+            </div>
+            
+            <div class="flex gap-4">
+                <div class="flex flex-col items-center">
+                    <span class="w-3 h-3 accent-dot rounded-full mt-2"></span>
+                    <div class="w-px bg-gray-700 flex-1 mt-2"></div>
+                </div>
+                <div class="flex-1">
+                    <div class="text-sm text-muted mb-1">2010 - 2015</div>
+                    <h3 class="text-xl font-semibold mb-2">Higher Educational Institute for Electronics - Leonding Upper Austria</h3>
+                    <p class="text-muted">
+                        Specialization in Technical Computer Science. Completed final exams in Technical Informatics, Applied Mathematics, and Telecommunications
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Redesigned project cards with better visual hierarchy -->
+<section>
+    <div class="section-card rounded-lg overflow-hidden mb-8">
+        
+        
+        
+        <video
+    class="js-lazy-video w-full"
+    muted
+    loop
+    playsinline
+    preload="none"
+    poster="/videos/posters/CurseBreakers.webp"
+    width="1280"
+    height="720"
+>
+    <source data-src="/videos/CurseBreakers.mp4" type="video/mp4">
+</video>
+
+        <div class="p-8">
+            <h3 class="text-2xl font-bold mb-2">False Wall - Cursebreakers</h3>
+            <p class="text-sm text-muted mb-6">2025 - Present</p>
+            <p class="mb-6 text-muted">
+                Developing Cursebreakers, a 2 player co-op first person dungeon crawler in Unreal Engine 5.
+                It Takes Two’s co-op design fused with the classic Elder Scrolls dungeon crawling experience, made to get two players talking and working together.
+                Visit the <a href="https://falsewall.at" class="accent-link" target="_blank" rel="noopener noreferrer">company</a>
+                or
+                <a href="https://store.steampowered.com/app/4234640/Curse_Breakers" class="accent-link" target="_blank" rel="noopener noreferrer">steam page</a>
+                to learn more.
+            </p>
+
+            <div class="flex flex-wrap gap-2">
+                <span class="tech-tag">C++</span>
+                <span class="tech-tag">Unreal Engine 5</span>
+				<span class="tech-tag">Game Design</span>
+				<span class="tech-tag">Marketing</span>
+				<span class="tech-tag">Dev Ops</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-card rounded-lg overflow-hidden mb-8">
+        
+        
+        
+        <video
+    class="js-lazy-video w-full"
+    muted
+    loop
+    playsinline
+    preload="none"
+    poster="/videos/posters/Outerstellar.webp"
+    width="1280"
+    height="720"
+>
+    <source data-src="/videos/Outerstellar.mp4" type="video/mp4">
+</video>
+
+        <div class="p-8">
+            <h3 class="text-2xl font-bold mb-2">Strange Horizons - Outerstellar</h3>
+            <p class="text-sm text-muted mb-6">2020/03 - 2024/09</p>
+            <p class="mb-6 text-muted">
+                Collaborated with another engineer to design and build the core systems for a multiplayer survival game.
+            </p>
+            <ul class="space-y-3 mb-6 text-muted">
+                <li class="flex items-start gap-2">
+                    <span class="accent-dot w-1.5 h-1.5 rounded-full mt-2.5 flex-shrink-0"></span>
+                    <span>Developed optimized networked systems for key gameplay features such as inventory, deployables, interaction, abilities, melee combat, animation, and more</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <span class="accent-dot w-1.5 h-1.5 rounded-full mt-2.5 flex-shrink-0"></span>
+                    <span>Led the implementation of the game's user interface</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <span class="accent-dot w-1.5 h-1.5 rounded-full mt-2.5 flex-shrink-0"></span>
+                    <span>Developed all the necessary systems and behaviors for bot and monster AI in a multiplayer context</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <span class="accent-dot w-1.5 h-1.5 rounded-full mt-2.5 flex-shrink-0"></span>
+                    <span>Established a validation system to ensure simple changes could be made safely</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <span class="accent-dot w-1.5 h-1.5 rounded-full mt-2.5 flex-shrink-0"></span>
+                    <span>Created custom editor tools to streamline tasks such as adding new items, AI, and deployables</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <span class="accent-dot w-1.5 h-1.5 rounded-full mt-2.5 flex-shrink-0"></span>
+                    <span>Maintained and refactored the same code base for several years</span>
+                </li>
+            </ul>
+            <div class="flex flex-wrap gap-2">
+                <span class="tech-tag">C++</span>
+                <span class="tech-tag">Unreal Engine 5</span>
+                <span class="tech-tag">Perforce</span>
+                <span class="tech-tag">AWS</span>
+                <span class="tech-tag">TeamCity</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-card rounded-lg overflow-hidden">
+        <picture>
+            <source type="image/webp" srcset="/images/Asseto.webp">
+            <img src="/images/Asseto.jpg" alt="Assetto Corsa Screenshot" width="960" height="540" loading="lazy" decoding="async" class="w-full h-80 object-cover">
+        </picture>
+        <div class="p-8">
+            <h3 class="text-2xl font-bold mb-2">d3t Limited - Assetto Corsa Competizione PS4 / XB1 Port</h3>
+            <p class="text-sm text-muted mb-6">2019/02 - 2019/12</p>
+            <p class="mb-6 text-muted">
+                Contributed to the console port of Assetto Corsa Competizione, a racing simulation 
+                game known for its realistic physics and driving experience. Focused on performance optimization and 
+                console-specific features.
+            </p>
+            <ul class="space-y-3 mb-6 text-muted">
+                <li class="flex items-start gap-2">
+                    <span class="accent-dot w-1.5 h-1.5 rounded-full mt-2.5 flex-shrink-0"></span>
+                    <span>Contributed to CPU/GPU performance optimization for console versions</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <span class="accent-dot w-1.5 h-1.5 rounded-full mt-2.5 flex-shrink-0"></span>
+                    <span>Optimized memory usage to fit the game within console memory</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <span class="accent-dot w-1.5 h-1.5 rounded-full mt-2.5 flex-shrink-0"></span>
+                    <span>Developed the XB1/PS4 User Management Layer</span>
+                </li>
+            </ul>
+            <div class="flex flex-wrap gap-2">
+                <span class="tech-tag">C++</span>
+                <span class="tech-tag">Unreal Engine 4</span>
+                <span class="tech-tag">Perforce</span>
+                <span class="tech-tag">Console SDKs</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section>
+    <h2 class="text-3xl font-bold mb-8">Student Projects</h2>
+    <div class="grid md:grid-cols-2 gap-6">
+        <div class="section-card rounded-lg overflow-hidden">
+            
+            
+            
+            <video
+    class="js-lazy-video w-full"
+    muted
+    loop
+    playsinline
+    preload="none"
+    poster="/videos/posters/AnimalSquad.webp"
+    width="854"
+    height="480"
+>
+    <source data-src="/videos/AnimalSquad.mp4" type="video/mp4">
+</video>
+
+            <div class="p-6">
+                <h3 class="text-xl font-bold mb-3">Animal Squad</h3>
+                <p class="mb-4 text-muted">
+                    A turn based 1v1 multiplayer strategy game featuring unique animal characters with special abilities.
+                </p>
+                <ul class="space-y-2 mb-4 text-muted">
+                    <li class="flex items-start gap-2">
+                        <span class="accent-dot w-1.5 h-1.5 rounded-full mt-2.5 flex-shrink-0"></span>
+                        <span>Implemented networking using GameSparks Services</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="accent-dot w-1.5 h-1.5 rounded-full mt-2.5 flex-shrink-0"></span>
+                        <span>Developed the hexagon grid system</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="accent-dot w-1.5 h-1.5 rounded-full mt-2.5 flex-shrink-0"></span>
+                        <span>Created modular unit framework for gameplay variety</span>
+                    </li>
+                </ul>
+                <div class="flex flex-wrap gap-2">
+                    <span class="tech-tag">Unity</span>
+                    <span class="tech-tag">C#</span>
+                    <span class="tech-tag">GameSparks</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-card rounded-lg overflow-hidden">
+            
+            
+            
+            <video
+    class="js-lazy-video w-full"
+    muted
+    loop
+    playsinline
+    preload="none"
+    poster="/videos/posters/Jumper.webp"
+    width="854"
+    height="480"
+>
+    <source data-src="/videos/Jumper.mp4" type="video/mp4">
+</video>
+
+            <div class="p-6">
+                <h3 class="text-xl font-bold mb-3">Ultimate Parkour Challenge</h3>
+                <p class="mb-4 text-muted">
+                    A 3D platformer featuring advanced movement mechanics and challenging level design.
+                </p>
+                <ul class="space-y-2 mb-4 text-muted">
+                    <li class="flex items-start gap-2">
+                        <span class="accent-dot w-1.5 h-1.5 rounded-full mt-2.5 flex-shrink-0"></span>
+                        <span>Developed a complex character controller with various parkour moves</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="accent-dot w-1.5 h-1.5 rounded-full mt-2.5 flex-shrink-0"></span>
+                        <span>Implemented a networked leaderboard system</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="accent-dot w-1.5 h-1.5 rounded-full mt-2.5 flex-shrink-0"></span>
+                        <span>Set up a state machine based animation system for smooth character movement</span>
+                    </li>
+                </ul>
+                <div class="flex flex-wrap gap-2">
+                    <span class="tech-tag">Unity</span>
+                    <span class="tech-tag">C#</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section>
+    <h2 class="text-3xl font-bold mb-8">Game Jams</h2>
+    <div class="grid md:grid-cols-2 gap-6">
+        <div class="section-card rounded-lg overflow-hidden">
+            
+            
+            
+            <video
+    class="js-lazy-video w-full"
+    muted
+    loop
+    playsinline
+    preload="none"
+    poster="/videos/posters/KittenSmack.webp"
+    width="854"
+    height="480"
+>
+    <source data-src="/videos/KittenSmack.mp4" type="video/mp4">
+</video>
+
+            <div class="p-6">
+                <h3 class="text-xl font-bold mb-3">Kitten Smack - Geek GameJam 2018</h3>
+                <p class="mb-4 text-muted">
+                   A sidescroller set in a surreal world where players save a kitten by soundblasting it forward while avoiding dangerous creatures.
+                </p>
+                <ul class="space-y-2 mb-4 text-muted">
+                    <li class="flex items-start gap-2">
+                        <span class="accent-dot w-1.5 h-1.5 rounded-full mt-2.5 flex-shrink-0"></span>
+                        <span>Developed in 48 hours</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="accent-dot w-1.5 h-1.5 rounded-full mt-2.5 flex-shrink-0"></span>
+                        <span>Collaborated with an artist, sound designer, and game designer</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="accent-dot w-1.5 h-1.5 rounded-full mt-2.5 flex-shrink-0"></span>
+                        <span>Focused on programming while working with a dedicated game designer for the first time</span>
+                    </li>
+                </ul>
+                <div class="flex flex-wrap gap-2">
+                    <span class="tech-tag">Unity</span>
+                    <span class="tech-tag">C#</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-card rounded-lg overflow-hidden">
+            
+            
+            
+            <video
+    class="js-lazy-video w-full"
+    muted
+    loop
+    playsinline
+    preload="none"
+    poster="/videos/posters/BeatPiston.webp"
+    width="854"
+    height="480"
+>
+    <source data-src="/videos/BeatPiston.mp4" type="video/mp4">
+</video>
+
+            <div class="p-6">
+                <h3 class="text-xl font-bold mb-3">Beat Piston - Global GameJam 2017</h3>
+                <p class="mb-4 text-muted">
+                    A rhythm infinite runner where players tap in sync with the beat while switching gears to dodge 
+                    obstacles and survive.
+                </p>
+                <ul class="space-y-2 mb-4 text-muted">
+                    <li class="flex items-start gap-2">
+                        <span class="accent-dot w-1.5 h-1.5 rounded-full mt-2.5 flex-shrink-0"></span>
+                        <span>Developed in 48 hours</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="accent-dot w-1.5 h-1.5 rounded-full mt-2.5 flex-shrink-0"></span>
+                        <span>Worked on gameplay mechanics and obstacle generation</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="accent-dot w-1.5 h-1.5 rounded-full mt-2.5 flex-shrink-0"></span>
+                        <span>Collaborated with a sound designer for beat synchronization</span>
+                    </li>
+                </ul>
+                <div class="flex flex-wrap gap-2">
+                    <span class="tech-tag">Unity</span>
+                    <span class="tech-tag">C#</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+    </div>
+</main>
+
+    <script src="/js/lazy-video.js" defer></script>
+</body>
+</html>
