@@ -1,3 +1,6 @@
 /zola.exe
 /public
 /binaries
+/videos-src
+/images-src
+/node_modules

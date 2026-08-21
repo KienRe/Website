@@ -3,7 +3,7 @@
 {% block title %}{{ config.title }}{% endblock %}
 
 {% block head %}
-<link rel="preload" as="image" href="/images/me.jpg">
+<link rel="preload" as="image" href="/images/me.webp" type="image/webp">
 {% endblock %}
 
 {% block content %}
@@ -28,7 +28,10 @@
 <section>
     <div class="section-card rounded-lg p-8">
         <div class="md:flex gap-8 items-center">
-            <img src="/images/me.jpg" alt="René Kienauer" width="144" height="144" loading="eager" class="w-36 h-36 rounded-full mb-6 md:mb-0 flex-shrink-0">
+            <picture>
+                <source type="image/webp" srcset="/images/me.webp">
+                <img src="/images/me.jpg" alt="René Kienauer" width="144" height="144" loading="eager" decoding="async" class="w-36 h-36 rounded-full mb-6 md:mb-0 flex-shrink-0">
+            </picture>
             <div class="space-y-4">
                 <p>
                     I'm René, a game developer from Austria who loves creating games.
@@ -121,10 +124,10 @@
 <!-- Redesigned project cards with better visual hierarchy -->
 <section>
     <div class="section-card rounded-lg overflow-hidden mb-8">
-        <video width="100%" autoplay muted loop playsinline class="w-full">
-            <source src="/videos/CurseBreakers.mp4" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
+        {% set video_name = "CurseBreakers" %}
+        {% set video_width = 1280 %}
+        {% set video_height = 720 %}
+        {% include "partials/lazy-video.html" %}
         <div class="p-8">
             <h3 class="text-2xl font-bold mb-2">False Wall - Cursebreakers</h3>
             <p class="text-sm text-muted mb-6">2025 - Present</p>
@@ -148,10 +151,10 @@
     </div>
 
     <div class="section-card rounded-lg overflow-hidden mb-8">
-        <video width="100%" autoplay muted loop playsinline class="w-full">
-            <source src="/videos/Outerstellar.webm" type="video/webm">
-            Your browser does not support the video tag.
-        </video>
+        {% set video_name = "Outerstellar" %}
+        {% set video_width = 1280 %}
+        {% set video_height = 720 %}
+        {% include "partials/lazy-video.html" %}
         <div class="p-8">
             <h3 class="text-2xl font-bold mb-2">Strange Horizons - Outerstellar</h3>
             <p class="text-sm text-muted mb-6">2020/03 - 2024/09</p>
@@ -195,7 +198,10 @@
     </div>
 
     <div class="section-card rounded-lg overflow-hidden">
-        <img src="/images/Asseto.png" alt="Assetto Corsa Screenshot" class="w-full h-80 object-cover">
+        <picture>
+            <source type="image/webp" srcset="/images/Asseto.webp">
+            <img src="/images/Asseto.jpg" alt="Assetto Corsa Screenshot" width="960" height="540" loading="lazy" decoding="async" class="w-full h-80 object-cover">
+        </picture>
         <div class="p-8">
             <h3 class="text-2xl font-bold mb-2">d3t Limited - Assetto Corsa Competizione PS4 / XB1 Port</h3>
             <p class="text-sm text-muted mb-6">2019/02 - 2019/12</p>
@@ -232,10 +238,10 @@
     <h2 class="text-3xl font-bold mb-8">Student Projects</h2>
     <div class="grid md:grid-cols-2 gap-6">
         <div class="section-card rounded-lg overflow-hidden">
-            <video width="100%" autoplay muted loop playsinline class="w-full">
-                <source src="/videos/AnimalSquad.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
+            {% set video_name = "AnimalSquad" %}
+            {% set video_width = 854 %}
+            {% set video_height = 480 %}
+            {% include "partials/lazy-video.html" %}
             <div class="p-6">
                 <h3 class="text-xl font-bold mb-3">Animal Squad</h3>
                 <p class="mb-4 text-muted">
@@ -264,10 +270,10 @@
         </div>
 
         <div class="section-card rounded-lg overflow-hidden">
-            <video width="100%" autoplay muted loop playsinline class="w-full">
-                <source src="/videos/Jumper.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
+            {% set video_name = "Jumper" %}
+            {% set video_width = 854 %}
+            {% set video_height = 480 %}
+            {% include "partials/lazy-video.html" %}
             <div class="p-6">
                 <h3 class="text-xl font-bold mb-3">Ultimate Parkour Challenge</h3>
                 <p class="mb-4 text-muted">
@@ -300,10 +306,10 @@
     <h2 class="text-3xl font-bold mb-8">Game Jams</h2>
     <div class="grid md:grid-cols-2 gap-6">
         <div class="section-card rounded-lg overflow-hidden">
-            <video width="100%" autoplay muted loop playsinline class="w-full">
-                <source src="/videos/KittenSmack.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
+            {% set video_name = "KittenSmack" %}
+            {% set video_width = 854 %}
+            {% set video_height = 480 %}
+            {% include "partials/lazy-video.html" %}
             <div class="p-6">
                 <h3 class="text-xl font-bold mb-3">Kitten Smack - Geek GameJam 2018</h3>
                 <p class="mb-4 text-muted">
@@ -331,10 +337,10 @@
         </div>
 
         <div class="section-card rounded-lg overflow-hidden">
-            <video width="100%" autoplay muted loop playsinline class="w-full">
-                <source src="/videos/BeatPiston.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
+            {% set video_name = "BeatPiston" %}
+            {% set video_width = 854 %}
+            {% set video_height = 480 %}
+            {% include "partials/lazy-video.html" %}
             <div class="p-6">
                 <h3 class="text-xl font-bold mb-3">Beat Piston - Global GameJam 2017</h3>
                 <p class="mb-4 text-muted">

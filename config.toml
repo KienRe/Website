@@ -5,7 +5,7 @@ base_url = "https://rkien.eu"
 compile_sass = false
 
 # Whether to build a search index to be used later on by a JavaScript library
-build_search_index = true
+build_search_index = false
 
 [markdown.highlighting]
 # Replaces the old highlight_code / highlight_theme keys (removed in Zola 0.22+)
