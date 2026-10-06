@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog - </title>
+    <meta name="description" content="">
+    <link rel="preload" href="/fonts/inter-latin-400.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/inter-latin-700.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="/css/app.css">
+    <style>
+        html, body { background-color: #0f172a; }
+    </style>
+    
+	<!-- Privacy-friendly analytics by Plausible -->
+	<script async src="https://plausible.keenhour.eu/js/pa-gaGkA7K6KZJVIZFhB1P1G.js"></script>
+	<script>
+	window.plausible = window.plausible || function () { (plausible.q = plausible.q || []).push(arguments) };
+	plausible.init = plausible.init || function (i) { plausible.o = i || {} };
+	plausible.init({ endpoint: "https://plausible.keenhour.eu/api/event" });
+	</script>
+</head>
+<body>
+    <nav class="absolute top-0 right-0 p-8 z-50" aria-label="Main navigation">
+        <div class="flex gap-8">
+            <a href="https://rkien.eu/" 
+               class="nav-link  font-medium"
+               >
+                Portfolio
+            </a>
+            <!--
+            <a href="https://rkien.eu/blog/" 
+               class="nav-link active font-medium"
+               aria-current="page">
+                Blog
+            </a>
+            
+            
+              
+              <a href="https://rkien.eu/journal/2024-03-01/" 
+                 class="nav-link  font-medium"
+                 >
+                  Journal
+              </a>
+              -->
+            
+        </div>
+    </nav>
+    
+
+<header class="pt-32 pb-20 px-8">
+    <div class="max-w-5xl mx-auto">
+        <h1 class="text-5xl md:text-6xl font-bold mb-6">Blog</h1>
+        <p class="text-xl text-muted">Collection of thoughts that might be useful to someone else then me</p>
+    </div>
+</header>
+
+<main class="px-8 pb-20">
+    <div class="max-w-5xl mx-auto">
+        
+        <article class="blog-card rounded-lg p-8 mb-4">
+            <div class="mb-3 flex items-center justify-between">
+                <time datetime="2024-12-01" class="text-sm text-muted">December 2024</time>
+                
+            </div>
+            <h2 class="text-3xl font-bold mb-4">
+                <a href="https://rkien.eu/blog/steam-upload-tool/" class="hover:text-cyan-400 transition-colors">
+                    Creating a Steam Upload Tool in Unreal Engine
+                </a>
+            </h2>
+            <p class="text-muted mb-6">Uploading builds to Steam typically involves running SteamCMD from the command line with various parameters. For teams working in Unreal Engine, having a custom editor tool that streamlines this process can save time and reduce errors. This post walks through creating a Slate-based UI widget that integrates directly into the Unreal Editor, making Steam uploads a one-click operation.</p>
+            <a href="https://rkien.eu/blog/steam-upload-tool/" class="accent-link font-medium inline-flex items-center gap-2">
+                Read article
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+            </a>
+        </article>
+        
+        <article class="blog-card rounded-lg p-8 mb-4">
+            <div class="mb-3 flex items-center justify-between">
+                <time datetime="2024-12-01" class="text-sm text-muted">December 2024</time>
+                
+            </div>
+            <h2 class="text-3xl font-bold mb-4">
+                <a href="https://rkien.eu/blog/reading-metadata/" class="hover:text-cyan-400 transition-colors">
+                    Reading Metadata Specifiers in a Packaged Build in Unreal
+                </a>
+            </h2>
+            <p class="text-muted mb-6">One common challenge in Unreal Engine development is accessing metadata specifiers (custom function or property metadata) in a packaged build. By default, metadata is mostly accessible in-editor, but if you want this information at runtime or in the shipped game, you need a workflow to export, package, and load metadata automatically.</p>
+            <a href="https://rkien.eu/blog/reading-metadata/" class="accent-link font-medium inline-flex items-center gap-2">
+                Read article
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+            </a>
+        </article>
+        
+    </div>
+</main>
+
+    <script src="/js/lazy-video.js" defer></script>
+</body>
+</html>

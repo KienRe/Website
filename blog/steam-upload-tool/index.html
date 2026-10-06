@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creating a Steam Upload Tool in Unreal Engine - </title>
+    <meta name="description" content="">
+    <link rel="preload" href="/fonts/inter-latin-400.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/inter-latin-700.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="/css/app.css">
+    <style>
+        html, body { background-color: #0f172a; }
+    </style>
+    
+	<!-- Privacy-friendly analytics by Plausible -->
+	<script async src="https://plausible.keenhour.eu/js/pa-gaGkA7K6KZJVIZFhB1P1G.js"></script>
+	<script>
+	window.plausible = window.plausible || function () { (plausible.q = plausible.q || []).push(arguments) };
+	plausible.init = plausible.init || function (i) { plausible.o = i || {} };
+	plausible.init({ endpoint: "https://plausible.keenhour.eu/api/event" });
+	</script>
+</head>
+<body>
+    <nav class="absolute top-0 right-0 p-8 z-50" aria-label="Main navigation">
+        <div class="flex gap-8">
+            <a href="https://rkien.eu/" 
+               class="nav-link  font-medium"
+               >
+                Portfolio
+            </a>
+            <!--
+            <a href="https://rkien.eu/blog/" 
+               class="nav-link active font-medium"
+               aria-current="page">
+                Blog
+            </a>
+            
+            
+              
+              <a href="https://rkien.eu/journal/2024-03-01/" 
+                 class="nav-link  font-medium"
+                 >
+                  Journal
+              </a>
+              -->
+            
+        </div>
+    </nav>
+    
+<!-- Header with back link -->
+<header class="pt-32 pb-20 px-8">
+    <div class="max-w-5xl mx-auto">
+        <a href="https://rkien.eu/blog/" class="accent-link inline-flex items-center gap-2 mb-8" aria-label="Back to Blog">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
+            Back to Blog
+        </a>
+        <h1 class="text-5xl md:text-6xl font-bold mb-6">Creating a Steam Upload Tool in Unreal Engine</h1>
+        <p class="text-xl text-muted">December 2024</p>
+    </div>
+</header>
+
+<main class="px-8 pb-20">
+    <div class="max-w-5xl mx-auto">
+        <!-- Article content -->
+        <article class="section-card rounded-lg p-8 md:p-12">
+            <p>Uploading builds to Steam typically involves running SteamCMD from the command line with various parameters. For teams working in Unreal Engine, having a <strong>custom editor tool</strong> that streamlines this process can save time and reduce errors. This post walks through creating a <strong>Slate-based UI widget</strong> that integrates directly into the Unreal Editor, making Steam uploads a one-click operation.</p>
+<hr />
+<h2 id="why-build-this-tool">Why Build This Tool?</h2>
+<p>The typical Steam upload workflow involves:</p>
+<ul>
+<li>Opening a command prompt or terminal</li>
+<li>Navigating to the SteamCMD directory</li>
+<li>Running commands with proper credentials and VDF file paths</li>
+<li>Managing sensitive passwords in plaintext</li>
+</ul>
+<p>By integrating this into the Unreal Editor, we can provide a <strong>user-friendly interface</strong> with validation, file browsing, and secure credential handling via environment variables.</p>
+<hr />
+<h2 id="step-1-create-the-slate-widget">Step 1: Create the Slate Widget</h2>
+<p>We'll use Unreal's <strong>Slate framework</strong> to build a custom UI window. The widget includes:</p>
+<ul>
+<li>Text fields for Steam username, VDF path, and SteamCMD path</li>
+<li>Read-only password field (reads from environment variable)</li>
+<li>Browse buttons for file selection</li>
+<li>Upload button with validation</li>
+<li>Status display for feedback</li>
+</ul>
+<p>Here's the header file (<code>SteamUpload.h</code>):</p>
+<pre class="giallo" style="color: #BABED8; background-color: #0F111A;" ><code data-lang="cpp"><span class="giallo-l"><span style="color: #89DDFF;font-style: italic;">#pragma</span><span style="color: #C792EA;"> once</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #89DDFF;font-style: italic;">#include</span><span style="color: #89DDFF;"> &quot;</span><span style="color: #C3E88D;">CoreMinimal.h</span><span style="color: #89DDFF;">&quot;</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;font-style: italic;">#include</span><span style="color: #89DDFF;"> &quot;</span><span style="color: #C3E88D;">Widgets/SCompoundWidget.h</span><span style="color: #89DDFF;">&quot;</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #C792EA;">class</span><span style="color: #FFCB6B;"> SEditableTextBox</span><span style="color: #89DDFF;">;</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #C792EA;">class</span><span style="color: #FFCB6B;"> SSteamUploadWidget</span><span style="color: #89DDFF;"> :</span><span style="color: #C792EA;"> public</span><span style="color: #FFCB6B;"> SCompoundWidget</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">{</span></span>
+<span class="giallo-l"><span style="color: #C792EA;">public</span><span style="color: #89DDFF;">:</span></span>
+<span class="giallo-l"><span style="color: #82AAFF;">    SLATE_BEGIN_ARGS</span><span style="color: #89DDFF;">(</span><span style="color: #FFCB6B;">SSteamUploadWidget</span><span style="color: #89DDFF;">) {}</span></span>
+<span class="giallo-l"><span style="color: #82AAFF;">    SLATE_END_ARGS</span><span style="color: #89DDFF;">()</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #C792EA;">    void</span><span style="color: #82AAFF;"> Construct</span><span style="color: #89DDFF;">(</span><span style="color: #C792EA;">const</span><span style="color: #FFCB6B;"> FArguments</span><span style="color: #C792EA;">&amp;</span><span style="font-style: italic;"> InArgs</span><span style="color: #89DDFF;">);</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #C792EA;">private</span><span style="color: #89DDFF;">:</span></span>
+<span class="giallo-l"><span style="color: #FFCB6B;">    TSharedPtr</span><span style="color: #89DDFF;">&lt;</span><span style="color: #FFCB6B;">SEditableTextBox</span><span style="color: #89DDFF;">&gt;</span><span> UsernameTextBox</span><span style="color: #89DDFF;">;</span></span>
+<span class="giallo-l"><span style="color: #FFCB6B;">    TSharedPtr</span><span style="color: #89DDFF;">&lt;</span><span style="color: #FFCB6B;">SEditableTextBox</span><span style="color: #89DDFF;">&gt;</span><span> PasswordTextBox</span><span style="color: #89DDFF;">;</span></span>
+<span class="giallo-l"><span style="color: #FFCB6B;">    TSharedPtr</span><span style="color: #89DDFF;">&lt;</span><span style="color: #FFCB6B;">SEditableTextBox</span><span style="color: #89DDFF;">&gt;</span><span> VDFPathTextBox</span><span style="color: #89DDFF;">;</span></span>
+<span class="giallo-l"><span style="color: #FFCB6B;">    TSharedPtr</span><span style="color: #89DDFF;">&lt;</span><span style="color: #FFCB6B;">SEditableTextBox</span><span style="color: #89DDFF;">&gt;</span><span> SteamCMDPathTextBox</span><span style="color: #89DDFF;">;</span></span>
+<span class="giallo-l"><span style="color: #FFCB6B;">    TSharedPtr</span><span style="color: #89DDFF;">&lt;</span><span style="color: #FFCB6B;">STextBlock</span><span style="color: #89DDFF;">&gt;</span><span> StatusTextBlock</span><span style="color: #89DDFF;">;</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #FFCB6B;">    FReply</span><span style="color: #82AAFF;"> OnUploadClicked</span><span style="color: #89DDFF;">();</span></span>
+<span class="giallo-l"><span style="color: #FFCB6B;">    FReply</span><span style="color: #82AAFF;"> OnBrowseVDFClicked</span><span style="color: #89DDFF;">();</span></span>
+<span class="giallo-l"><span style="color: #FFCB6B;">    FReply</span><span style="color: #82AAFF;"> OnBrowseSteamCMDClicked</span><span style="color: #89DDFF;">();</span></span>
+<span class="giallo-l"><span style="color: #F07178;">    </span></span>
+<span class="giallo-l"><span style="color: #C792EA;">    void</span><span style="color: #82AAFF;"> UpdateStatus</span><span style="color: #89DDFF;">(</span><span style="color: #C792EA;">const</span><span style="color: #FFCB6B;"> FString</span><span style="color: #C792EA;">&amp;</span><span style="font-style: italic;"> Message</span><span style="color: #89DDFF;">,</span><span style="color: #C792EA;"> const</span><span style="color: #FFCB6B;"> FLinearColor</span><span style="color: #C792EA;">&amp;</span><span style="font-style: italic;"> Color</span><span style="color: #89DDFF;">);</span></span>
+<span class="giallo-l"><span style="color: #C792EA;">    bool</span><span style="color: #82AAFF;"> ValidateInputs</span><span style="color: #89DDFF;">(</span><span style="color: #FFCB6B;">FString</span><span style="color: #C792EA;">&amp;</span><span style="font-style: italic;"> OutErrorMessage</span><span style="color: #89DDFF;">);</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">};</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #C792EA;">class</span><span style="color: #FFCB6B;"> FSteamUpload</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">{</span></span>
+<span class="giallo-l"><span style="color: #C792EA;">public</span><span style="color: #89DDFF;">:</span></span>
+<span class="giallo-l"><span style="color: #C792EA;">    static void</span><span style="color: #82AAFF;"> OpenSteamUploadWidget</span><span style="color: #89DDFF;">();</span></span>
+<span class="giallo-l"><span style="color: #C792EA;">    static void</span><span style="color: #82AAFF;"> Run</span><span style="color: #89DDFF;">(</span><span style="color: #C792EA;">const</span><span style="color: #FFCB6B;"> FString</span><span style="color: #C792EA;">&amp;</span><span style="font-style: italic;"> Username</span><span style="color: #89DDFF;">,</span><span style="color: #C792EA;"> const</span><span style="color: #FFCB6B;"> FString</span><span style="color: #C792EA;">&amp;</span><span style="font-style: italic;"> Password</span><span style="color: #89DDFF;">,</span><span style="color: #F07178;"> </span></span>
+<span class="giallo-l"><span style="color: #C792EA;">                    const</span><span style="color: #FFCB6B;"> FString</span><span style="color: #C792EA;">&amp;</span><span style="font-style: italic;"> VDFPath</span><span style="color: #89DDFF;">,</span><span style="color: #C792EA;"> const</span><span style="color: #FFCB6B;"> FString</span><span style="color: #C792EA;">&amp;</span><span style="font-style: italic;"> SteamCMDPath</span><span style="color: #89DDFF;">);</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">};</span></span></code></pre>
+<hr />
+<h2 id="step-2-implement-the-upload-logic">Step 2: Implement the Upload Logic</h2>
+<p>The core upload function uses <code>FPlatformProcess::CreateProc</code> to launch SteamCMD with the appropriate parameters:</p>
+<pre class="giallo" style="color: #BABED8; background-color: #0F111A;" ><code data-lang="cpp"><span class="giallo-l"><span style="color: #C792EA;">void</span><span style="color: #FFCB6B;"> FSteamUpload</span><span style="color: #89DDFF;">::</span><span style="color: #82AAFF;">Run</span><span style="color: #89DDFF;">(</span><span style="color: #C792EA;">const</span><span style="color: #FFCB6B;"> FString</span><span style="color: #C792EA;">&amp;</span><span style="font-style: italic;"> Username</span><span style="color: #89DDFF;">,</span><span style="color: #C792EA;"> const</span><span style="color: #FFCB6B;"> FString</span><span style="color: #C792EA;">&amp;</span><span style="font-style: italic;"> Password</span><span style="color: #89DDFF;">,</span><span> </span></span>
+<span class="giallo-l"><span style="color: #C792EA;">                       const</span><span style="color: #FFCB6B;"> FString</span><span style="color: #C792EA;">&amp;</span><span style="font-style: italic;"> VDFPath</span><span style="color: #89DDFF;">,</span><span style="color: #C792EA;"> const</span><span style="color: #FFCB6B;"> FString</span><span style="color: #C792EA;">&amp;</span><span style="font-style: italic;"> SteamCMDPath</span><span style="color: #89DDFF;">)</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">{</span></span>
+<span class="giallo-l"><span style="color: #464B5D;font-style: italic;">    // Format: steamcmd.exe +login &lt;username&gt; &lt;password&gt; +run_app_build &lt;vdf_path&gt;</span></span>
+<span class="giallo-l"><span style="color: #FFCB6B;">    FString</span><span> Arguments</span><span style="color: #89DDFF;"> =</span><span style="color: #FFCB6B;"> FString</span><span style="color: #89DDFF;">::</span><span style="color: #82AAFF;">Printf</span><span style="color: #89DDFF;">(</span></span>
+<span class="giallo-l"><span style="color: #82AAFF;">        TEXT</span><span style="color: #89DDFF;">(&quot;</span><span style="color: #C3E88D;">+login </span><span style="color: #F07178;">%s %s</span><span style="color: #C3E88D;"> +run_app_build </span><span>\&quot;</span><span style="color: #F07178;">%s</span><span>\&quot;</span><span style="color: #89DDFF;">&quot;),</span><span> </span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">        *</span><span>Username</span><span style="color: #89DDFF;">, *</span><span>Password</span><span style="color: #89DDFF;">, *</span><span>VDFPath</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">    );</span></span>
+<span class="giallo-l"><span>    </span></span>
+<span class="giallo-l"><span style="color: #82AAFF;">    UE_LOG</span><span style="color: #89DDFF;">(</span><span>LogTemp</span><span style="color: #89DDFF;">,</span><span> Log</span><span style="color: #89DDFF;">,</span><span style="color: #82AAFF;"> TEXT</span><span style="color: #89DDFF;">(&quot;</span><span style="color: #C3E88D;">Launching SteamCMD: </span><span style="color: #F07178;">%s %s</span><span style="color: #89DDFF;">&quot;),</span><span> </span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">           *</span><span>SteamCMDPath</span><span style="color: #89DDFF;">, *</span><span>Arguments</span><span style="color: #89DDFF;">);</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #FFCB6B;">    FString</span><span> CommandLine</span><span style="color: #89DDFF;"> =</span><span style="color: #FFCB6B;"> FString</span><span style="color: #89DDFF;">::</span><span style="color: #82AAFF;">Printf</span><span style="color: #89DDFF;">(</span><span style="color: #82AAFF;">TEXT</span><span style="color: #89DDFF;">(&quot;</span><span style="color: #C3E88D;">/c </span><span>\&quot;</span><span style="color: #F07178;">%s %s</span><span>\&quot;</span><span style="color: #89DDFF;">&quot;),</span><span> </span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">                                           *</span><span>SteamCMDPath</span><span style="color: #89DDFF;">, *</span><span>Arguments</span><span style="color: #89DDFF;">);</span></span>
+<span class="giallo-l"><span style="color: #FFCB6B;">    FPlatformProcess</span><span style="color: #89DDFF;">::</span><span style="color: #82AAFF;">CreateProc</span><span style="color: #89DDFF;">(</span></span>
+<span class="giallo-l"><span style="color: #82AAFF;">        TEXT</span><span style="color: #89DDFF;">(&quot;</span><span style="color: #C3E88D;">cmd.exe</span><span style="color: #89DDFF;">&quot;),</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">        *</span><span>CommandLine</span><span style="color: #89DDFF;">,</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">        true,</span><span style="color: #464B5D;font-style: italic;">   // bLaunchDetached</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">        false,</span><span style="color: #464B5D;font-style: italic;">  // bLaunchHidden</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">        false,</span><span style="color: #464B5D;font-style: italic;">  // bLaunchReallyHidden</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">        nullptr,</span></span>
+<span class="giallo-l"><span style="color: #F78C6C;">        0</span><span style="color: #89DDFF;">,</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">        nullptr,</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">        nullptr</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">    );</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">}</span></span></code></pre>
+<p>The password is read from the <code>STEAM_PASSWORD</code> environment variable to avoid storing credentials in the project:</p>
+<pre class="giallo" style="color: #BABED8; background-color: #0F111A;" ><code data-lang="cpp"><span class="giallo-l"><span>FString Password</span><span style="color: #89DDFF;"> =</span><span style="color: #FFCB6B;"> FPlatformMisc</span><span style="color: #89DDFF;">::</span><span style="color: #82AAFF;">GetEnvironmentVariable</span><span style="color: #89DDFF;">(</span><span style="color: #82AAFF;">TEXT</span><span style="color: #89DDFF;">(&quot;</span><span style="color: #C3E88D;">STEAM_PASSWORD</span><span style="color: #89DDFF;">&quot;));</span></span></code></pre>
+<hr />
+<h2 id="step-3-add-validation">Step 3: Add Validation</h2>
+<p>Before launching SteamCMD, validate all inputs to provide clear error messages:</p>
+<pre class="giallo" style="color: #BABED8; background-color: #0F111A;" ><code data-lang="cpp"><span class="giallo-l"><span style="color: #C792EA;">bool</span><span style="color: #FFCB6B;"> SSteamUploadWidget</span><span style="color: #89DDFF;">::</span><span style="color: #82AAFF;">ValidateInputs</span><span style="color: #89DDFF;">(</span><span style="color: #FFCB6B;">FString</span><span style="color: #C792EA;">&amp;</span><span style="font-style: italic;"> OutErrorMessage</span><span style="color: #89DDFF;">)</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">{</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;font-style: italic;">    if</span><span style="color: #89DDFF;"> (</span><span>UsernameTextBox</span><span style="color: #89DDFF;">-&gt;</span><span style="color: #82AAFF;">GetText</span><span style="color: #89DDFF;">().</span><span style="color: #82AAFF;">IsEmpty</span><span style="color: #89DDFF;">())</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">    {</span></span>
+<span class="giallo-l"><span>        OutErrorMessage</span><span style="color: #89DDFF;"> =</span><span style="color: #82AAFF;"> TEXT</span><span style="color: #89DDFF;">(&quot;</span><span style="color: #C3E88D;">Error: Steam username is required</span><span style="color: #89DDFF;">&quot;);</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;font-style: italic;">        return</span><span style="color: #89DDFF;"> false;</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">    }</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #FFCB6B;">    FString</span><span> Password</span><span style="color: #89DDFF;"> =</span><span style="color: #FFCB6B;"> FPlatformMisc</span><span style="color: #89DDFF;">::</span><span style="color: #82AAFF;">GetEnvironmentVariable</span><span style="color: #89DDFF;">(</span><span style="color: #82AAFF;">TEXT</span><span style="color: #89DDFF;">(&quot;</span><span style="color: #C3E88D;">STEAM_PASSWORD</span><span style="color: #89DDFF;">&quot;));</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;font-style: italic;">    if</span><span style="color: #89DDFF;"> (</span><span>Password</span><span style="color: #89DDFF;">.</span><span style="color: #82AAFF;">IsEmpty</span><span style="color: #89DDFF;">())</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">    {</span></span>
+<span class="giallo-l"><span>        OutErrorMessage</span><span style="color: #89DDFF;"> =</span><span style="color: #82AAFF;"> TEXT</span><span style="color: #89DDFF;">(&quot;</span><span style="color: #C3E88D;">Error: STEAM_PASSWORD environment variable is not set</span><span style="color: #89DDFF;">&quot;);</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;font-style: italic;">        return</span><span style="color: #89DDFF;"> false;</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">    }</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #FFCB6B;">    FString</span><span> VDFPath</span><span style="color: #89DDFF;"> =</span><span> VDFPathTextBox</span><span style="color: #89DDFF;">-&gt;</span><span style="color: #82AAFF;">GetText</span><span style="color: #89DDFF;">().</span><span style="color: #82AAFF;">ToString</span><span style="color: #89DDFF;">();</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;font-style: italic;">    if</span><span style="color: #89DDFF;"> (!</span><span style="color: #FFCB6B;">FPaths</span><span style="color: #89DDFF;">::</span><span style="color: #82AAFF;">FileExists</span><span style="color: #89DDFF;">(</span><span>VDFPath</span><span style="color: #89DDFF;">))</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">    {</span></span>
+<span class="giallo-l"><span>        OutErrorMessage</span><span style="color: #89DDFF;"> =</span><span style="color: #82AAFF;"> TEXT</span><span style="color: #89DDFF;">(&quot;</span><span style="color: #C3E88D;">Error: VDF file does not exist</span><span style="color: #89DDFF;">&quot;);</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;font-style: italic;">        return</span><span style="color: #89DDFF;"> false;</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">    }</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #FFCB6B;">    FString</span><span> SteamCMDPath</span><span style="color: #89DDFF;"> =</span><span> SteamCMDPathTextBox</span><span style="color: #89DDFF;">-&gt;</span><span style="color: #82AAFF;">GetText</span><span style="color: #89DDFF;">().</span><span style="color: #82AAFF;">ToString</span><span style="color: #89DDFF;">();</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;font-style: italic;">    if</span><span style="color: #89DDFF;"> (!</span><span style="color: #FFCB6B;">FPaths</span><span style="color: #89DDFF;">::</span><span style="color: #82AAFF;">FileExists</span><span style="color: #89DDFF;">(</span><span>SteamCMDPath</span><span style="color: #89DDFF;">))</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">    {</span></span>
+<span class="giallo-l"><span>        OutErrorMessage</span><span style="color: #89DDFF;"> =</span><span style="color: #82AAFF;"> TEXT</span><span style="color: #89DDFF;">(&quot;</span><span style="color: #C3E88D;">Error: SteamCMD executable does not exist</span><span style="color: #89DDFF;">&quot;);</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;font-style: italic;">        return</span><span style="color: #89DDFF;"> false;</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">    }</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #89DDFF;font-style: italic;">    return</span><span style="color: #89DDFF;"> true;</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">}</span></span></code></pre>
+<hr />
+<h2 id="step-4-integrate-into-editor-menu">Step 4: Integrate into Editor Menu</h2>
+<p>To make the tool easily accessible, add it to a custom editor menu. First, create the command in your editor commands class:</p>
+<pre class="giallo" style="color: #BABED8; background-color: #0F111A;" ><code data-lang="cpp"><span class="giallo-l"><span style="color: #464B5D;font-style: italic;">// In your editor commands header</span></span>
+<span class="giallo-l"><span style="color: #C792EA;">class</span><span style="color: #FFCB6B;"> FCustomEditorCommands</span><span style="color: #89DDFF;"> :</span><span style="color: #C792EA;"> public</span><span style="color: #FFCB6B;"> TCommands</span><span style="color: #89DDFF;">&lt;</span><span style="color: #FFCB6B;">FCustomEditorCommands</span><span style="color: #89DDFF;">&gt;</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">{</span></span>
+<span class="giallo-l"><span style="color: #C792EA;">public</span><span style="color: #89DDFF;">:</span></span>
+<span class="giallo-l"><span style="color: #FFCB6B;">    TSharedPtr</span><span style="color: #89DDFF;">&lt;</span><span style="color: #FFCB6B;">FUICommandInfo</span><span style="color: #89DDFF;">&gt;</span><span> UploadToSteamCommand</span><span style="color: #89DDFF;">;</span></span>
+<span class="giallo-l"><span style="color: #F07178;">    </span></span>
+<span class="giallo-l"><span style="color: #C792EA;">    virtual void</span><span style="color: #82AAFF;"> RegisterCommands</span><span style="color: #89DDFF;">()</span><span style="color: #C792EA;"> override</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">    {</span></span>
+<span class="giallo-l"><span style="color: #82AAFF;">        UI_COMMAND</span><span style="color: #89DDFF;">(</span><span>UploadToSteamCommand</span><span style="color: #89DDFF;">, &quot;</span><span style="color: #C3E88D;">Upload to Steam</span><span style="color: #89DDFF;">&quot;,</span><span style="color: #F07178;"> </span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">                   &quot;</span><span style="color: #C3E88D;">Uploads a build to steam.</span><span style="color: #89DDFF;">&quot;,</span><span style="color: #F07178;"> </span></span>
+<span class="giallo-l"><span style="color: #FFCB6B;">                   EUserInterfaceActionType</span><span style="color: #89DDFF;">::</span><span>Button</span><span style="color: #89DDFF;">,</span><span style="color: #82AAFF;"> FInputChord</span><span style="color: #89DDFF;">());</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">    }</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">};</span></span></code></pre>
+<p>Then wire it up in your menu class:</p>
+<pre class="giallo" style="color: #BABED8; background-color: #0F111A;" ><code data-lang="cpp"><span class="giallo-l"><span style="color: #C792EA;">void</span><span style="color: #FFCB6B;"> FRetroMenu</span><span style="color: #89DDFF;">::</span><span style="color: #82AAFF;">MapCommandsToActions</span><span style="color: #89DDFF;">()</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">{</span></span>
+<span class="giallo-l"><span>    Commands</span><span style="color: #89DDFF;"> =</span><span style="color: #82AAFF;"> MakeShareable</span><span style="color: #89DDFF;">(new</span><span> FUICommandList</span><span style="color: #89DDFF;">);</span></span>
+<span class="giallo-l"><span>    Commands</span><span style="color: #89DDFF;">-&gt;</span><span style="color: #82AAFF;">MapAction</span><span style="color: #89DDFF;">(</span></span>
+<span class="giallo-l"><span style="color: #FFCB6B;">        FCustomEditorCommands</span><span style="color: #89DDFF;">::</span><span style="color: #82AAFF;">Get</span><span style="color: #89DDFF;">().</span><span>UploadToSteamCommand</span><span style="color: #89DDFF;">,</span><span> </span></span>
+<span class="giallo-l"><span style="color: #FFCB6B;">        FExecuteAction</span><span style="color: #89DDFF;">::</span><span style="color: #82AAFF;">CreateStatic</span><span style="color: #89DDFF;">(</span><span style="color: #FFCB6B;">FSteamUpload</span><span style="color: #89DDFF;">::</span><span>OpenSteamUploadWidget</span><span style="color: #89DDFF;">)</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">    );</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">}</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #C792EA;">void</span><span style="color: #FFCB6B;"> FRetroMenu</span><span style="color: #89DDFF;">::</span><span style="color: #82AAFF;">CreateSubmenu</span><span style="color: #89DDFF;">()</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">{</span></span>
+<span class="giallo-l"><span style="color: #FFCB6B;">    UToolMenus</span><span style="color: #C792EA;">*</span><span> ToolMenus</span><span style="color: #89DDFF;"> =</span><span style="color: #FFCB6B;"> UToolMenus</span><span style="color: #89DDFF;">::</span><span style="color: #82AAFF;">Get</span><span style="color: #89DDFF;">();</span></span>
+<span class="giallo-l"><span style="color: #FFCB6B;">    UToolMenu</span><span style="color: #C792EA;">*</span><span> MainMenuBar</span><span style="color: #89DDFF;"> =</span><span> ToolMenus</span><span style="color: #89DDFF;">-&gt;</span><span style="color: #82AAFF;">ExtendMenu</span><span style="color: #89DDFF;">(&quot;</span><span style="color: #C3E88D;">LevelEditor.MainMenu</span><span style="color: #89DDFF;">&quot;);</span></span>
+<span class="giallo-l"><span>    </span></span>
+<span class="giallo-l"><span style="color: #FFCB6B;">    UToolMenu</span><span style="color: #C792EA;">*</span><span> RetroMenu</span><span style="color: #89DDFF;"> =</span><span> MainMenuBar</span><span style="color: #89DDFF;">-&gt;</span><span style="color: #82AAFF;">AddSubMenu</span><span style="color: #89DDFF;">(</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">        &quot;</span><span style="color: #C3E88D;">MainMenu</span><span style="color: #89DDFF;">&quot;,</span><span> NAME_None</span><span style="color: #89DDFF;">, &quot;</span><span style="color: #C3E88D;">Retro</span><span style="color: #89DDFF;">&quot;,</span><span> </span></span>
+<span class="giallo-l"><span style="color: #FFCB6B;">        FText</span><span style="color: #89DDFF;">::</span><span style="color: #82AAFF;">FromString</span><span style="color: #89DDFF;">(&quot;</span><span style="color: #C3E88D;">Retro</span><span style="color: #89DDFF;">&quot;),</span><span> </span></span>
+<span class="giallo-l"><span style="color: #FFCB6B;">        FText</span><span style="color: #89DDFF;">::</span><span style="color: #82AAFF;">FromString</span><span style="color: #89DDFF;">(&quot;</span><span style="color: #C3E88D;">RetroMenu</span><span style="color: #89DDFF;">&quot;)</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">    );</span></span>
+<span class="giallo-l"><span>    </span></span>
+<span class="giallo-l"><span style="color: #FFCB6B;">    FToolMenuSection</span><span style="color: #C792EA;">&amp;</span><span> SteamSection</span><span style="color: #89DDFF;"> =</span><span> RetroMenu</span><span style="color: #89DDFF;">-&gt;</span><span style="color: #82AAFF;">AddSection</span><span style="color: #89DDFF;">(</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">        &quot;</span><span style="color: #C3E88D;">Steam</span><span style="color: #89DDFF;">&quot;,</span><span style="color: #FFCB6B;"> FText</span><span style="color: #89DDFF;">::</span><span style="color: #82AAFF;">FromString</span><span style="color: #89DDFF;">(&quot;</span><span style="color: #C3E88D;">Steam</span><span style="color: #89DDFF;">&quot;)</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">    );</span></span>
+<span class="giallo-l"><span>    SteamSection</span><span style="color: #89DDFF;">.</span><span style="color: #82AAFF;">AddMenuEntryWithCommandList</span><span style="color: #89DDFF;">(</span></span>
+<span class="giallo-l"><span style="color: #FFCB6B;">        FCustomEditorCommands</span><span style="color: #89DDFF;">::</span><span style="color: #82AAFF;">Get</span><span style="color: #89DDFF;">().</span><span>UploadToSteamCommand</span><span style="color: #89DDFF;">,</span><span> Commands</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">    );</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">}</span></span></code></pre>
+<hr />
+<h2 id="step-5-initialize-in-your-editor-module">Step 5: Initialize in Your Editor Module</h2>
+<p>Finally, create the menu when your editor module starts up:</p>
+<pre class="giallo" style="color: #BABED8; background-color: #0F111A;" ><code data-lang="cpp"><span class="giallo-l"><span style="color: #C792EA;">class</span><span style="color: #FFCB6B;"> FRetroEditorModule</span><span style="color: #89DDFF;"> :</span><span style="color: #C792EA;"> public</span><span style="color: #FFCB6B;"> IModuleInterface</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">{</span></span>
+<span class="giallo-l"><span style="color: #C792EA;">public</span><span style="color: #89DDFF;">:</span></span>
+<span class="giallo-l"><span style="color: #C792EA;">    virtual void</span><span style="color: #82AAFF;"> StartupModule</span><span style="color: #89DDFF;">()</span><span style="color: #C792EA;"> override</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">    {</span></span>
+<span class="giallo-l"><span style="color: #464B5D;font-style: italic;">        // Initialize custom menu</span></span>
+<span class="giallo-l"><span>        RetroMenu</span><span style="color: #89DDFF;"> =</span><span style="color: #FFCB6B;"> FRetroMenu</span><span style="color: #89DDFF;">::</span><span style="color: #82AAFF;">CreateMenu</span><span style="color: #89DDFF;">();</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">    }</span></span>
+<span class="giallo-l"><span style="color: #F07178;">    </span></span>
+<span class="giallo-l"><span style="color: #C792EA;">    virtual void</span><span style="color: #82AAFF;"> ShutdownModule</span><span style="color: #89DDFF;">()</span><span style="color: #C792EA;"> override</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">    {</span></span>
+<span class="giallo-l"><span>        RetroMenu</span><span style="color: #89DDFF;">.</span><span style="color: #82AAFF;">Reset</span><span style="color: #89DDFF;">();</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">    }</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #C792EA;">private</span><span style="color: #89DDFF;">:</span></span>
+<span class="giallo-l"><span style="color: #FFCB6B;">    TSharedPtr</span><span style="color: #89DDFF;">&lt;</span><span style="color: #FFCB6B;">FRetroMenu</span><span style="color: #89DDFF;">&gt;</span><span> RetroMenu</span><span style="color: #89DDFF;">;</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">};</span></span></code></pre>
+<hr />
+<h2 id="understanding-vdf-files">Understanding VDF Files</h2>
+<p>VDF (Valve Data File) files are configuration files that tell SteamCMD <strong>what to upload</strong> and <strong>where to publish it</strong>. You'll need two types of VDF files:</p>
+<h3 id="app-build-configuration">App Build Configuration</h3>
+<p>The main configuration file defines your app ID, build description, and which branch to publish to:</p>
+<pre class="giallo" style="color: #BABED8; background-color: #0F111A;" ><code data-lang="ini"><span class="giallo-l"><span style="color: #89DDFF;">&quot;</span><span style="color: #C3E88D;">appbuild</span><span style="color: #89DDFF;">&quot;</span></span>
+<span class="giallo-l"><span>{</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">    &quot;</span><span style="color: #C3E88D;">appid</span><span style="color: #89DDFF;">&quot;       &quot;</span><span style="color: #C3E88D;">4115780</span><span style="color: #89DDFF;">&quot;</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">    &quot;</span><span style="color: #C3E88D;">desc</span><span style="color: #89DDFF;">&quot;        &quot;</span><span style="color: #C3E88D;">Retro Dev Build</span><span style="color: #89DDFF;">&quot;</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">    &quot;</span><span style="color: #C3E88D;">buildoutput</span><span style="color: #89DDFF;">&quot; &quot;</span><span style="color: #C3E88D;">output</span><span style="color: #89DDFF;">&quot;</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">    &quot;</span><span style="color: #C3E88D;">setlive</span><span style="color: #89DDFF;">&quot;     &quot;</span><span style="color: #C3E88D;">development</span><span style="color: #89DDFF;">&quot;</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">    &quot;</span><span style="color: #C3E88D;">preview</span><span style="color: #89DDFF;">&quot;     &quot;</span><span style="color: #C3E88D;">0</span><span style="color: #89DDFF;">&quot;</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">    &quot;</span><span style="color: #C3E88D;">local</span><span style="color: #89DDFF;">&quot;       &quot;&quot;</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #89DDFF;">    &quot;</span><span style="color: #C3E88D;">depots</span><span style="color: #89DDFF;">&quot;</span></span>
+<span class="giallo-l"><span>    {</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">        &quot;</span><span style="color: #C3E88D;">4115781</span><span style="color: #89DDFF;">&quot; &quot;</span><span style="color: #C3E88D;">depot_4115781.vdf</span><span style="color: #89DDFF;">&quot;</span></span>
+<span class="giallo-l"><span>    }</span></span>
+<span class="giallo-l"><span>}</span></span></code></pre>
+<ul>
+<li><code>appid</code>: Your Steam app ID</li>
+<li><code>desc</code>: Description for this build (shows in Steam admin)</li>
+<li><code>setlive</code>: Which branch to publish to (<code>development</code>, <code>public</code>, etc.)</li>
+<li><code>depots</code>: List of depot configuration files to include</li>
+</ul>
+<h3 id="depot-configuration">Depot Configuration</h3>
+<p>The depot file specifies which files to upload and where they're located:</p>
+<pre class="giallo" style="color: #BABED8; background-color: #0F111A;" ><code data-lang="ini"><span class="giallo-l"><span style="color: #89DDFF;">&quot;</span><span style="color: #C3E88D;">DepotBuildConfig</span><span style="color: #89DDFF;">&quot;</span></span>
+<span class="giallo-l"><span>{</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">    &quot;</span><span style="color: #C3E88D;">DepotID</span><span style="color: #89DDFF;">&quot; &quot;</span><span style="color: #C3E88D;">4115781</span><span style="color: #89DDFF;">&quot;</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">    &quot;</span><span style="color: #C3E88D;">ContentRoot</span><span style="color: #89DDFF;">&quot; &quot;</span><span style="color: #C3E88D;">..\..\Saved\StagedBuilds\Windows</span><span style="color: #89DDFF;">&quot;</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">    &quot;</span><span style="color: #C3E88D;">FileMapping</span><span style="color: #89DDFF;">&quot;</span></span>
+<span class="giallo-l"><span>    {</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">        &quot;</span><span style="color: #C3E88D;">LocalPath</span><span style="color: #89DDFF;">&quot; &quot;</span><span style="color: #C3E88D;">*</span><span style="color: #89DDFF;">&quot;</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">        &quot;</span><span style="color: #C3E88D;">DepotPath</span><span style="color: #89DDFF;">&quot; &quot;</span><span style="color: #C3E88D;">.</span><span style="color: #89DDFF;">&quot;</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">        &quot;</span><span style="color: #C3E88D;">recursive</span><span style="color: #89DDFF;">&quot; &quot;</span><span style="color: #C3E88D;">1</span><span style="color: #89DDFF;">&quot;</span></span>
+<span class="giallo-l"><span>    }</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">    &quot;</span><span style="color: #C3E88D;">FileExclusion</span><span style="color: #89DDFF;">&quot; &quot;</span><span style="color: #C3E88D;">*.pdb</span><span style="color: #89DDFF;">&quot;</span></span>
+<span class="giallo-l"><span>}</span></span></code></pre>
+<ul>
+<li><code>DepotID</code>: Your depot ID (created in Steamworks)</li>
+<li><code>ContentRoot</code>: Path to your packaged build directory</li>
+<li><code>FileMapping</code>: Maps local files to Steam depot structure</li>
+<li><code>FileExclusion</code>: Pattern for files to skip (like debug symbols)</li>
+</ul>
+<h3 id="multiple-branches">Multiple Branches</h3>
+<p>Create separate app build files for different branches (development, staging, public). The only difference is typically the <code>setlive</code> value:</p>
+<pre class="giallo" style="color: #BABED8; background-color: #0F111A;" ><code data-lang="ini"><span class="giallo-l"><span>// app_dev.vdf</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">&quot;</span><span style="color: #C3E88D;">setlive</span><span style="color: #89DDFF;">&quot; &quot;</span><span style="color: #C3E88D;">development</span><span style="color: #89DDFF;">&quot;</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>// app_release.vdf</span></span>
+<span class="giallo-l"><span style="color: #89DDFF;">&quot;</span><span style="color: #C3E88D;">setlive</span><span style="color: #89DDFF;">&quot; &quot;</span><span style="color: #C3E88D;">public</span><span style="color: #89DDFF;">&quot;</span></span></code></pre>
+<p>Store these VDF files in a <code>Tools/Steam</code> directory in your project. The relative paths in <code>ContentRoot</code> should point to your packaged build output.</p>
+<hr />
+<h2 id="setting-up-environment-variables">Setting Up Environment Variables</h2>
+<p>To use the tool, set the <code>STEAM_PASSWORD</code> environment variable before launching the editor:</p>
+<p><strong>Windows:</strong></p>
+<pre class="giallo" style="color: #BABED8; background-color: #0F111A;" ><code data-lang="bat"><span class="giallo-l"><span style="color: #89DDFF;">setx</span><span> STEAM_PASSWORD </span><span style="color: #89DDFF;">&quot;</span><span style="color: #C3E88D;">your_password_here</span><span style="color: #89DDFF;">&quot;</span></span></code></pre>
+<p><strong>Linux/Mac:</strong></p>
+<pre class="giallo" style="color: #BABED8; background-color: #0F111A;" ><code data-lang="shellscript"><span class="giallo-l"><span style="color: #C792EA;">export</span><span> STEAM_PASSWORD</span><span style="color: #89DDFF;">=&quot;</span><span style="color: #C3E88D;">your_password_here</span><span style="color: #89DDFF;">&quot;</span></span></code></pre>
+<hr />
+<h2 id="key-features">Key Features</h2>
+<ul>
+<li><strong>Secure credential handling:</strong> Passwords never stored in project files or source control</li>
+<li><strong>File browser integration:</strong> Native OS file dialogs for selecting VDF and SteamCMD paths</li>
+<li><strong>Input validation:</strong> Clear error messages for missing or invalid configurations</li>
+<li><strong>Default paths:</strong> Pre-configured paths for common project structures</li>
+<li><strong>Status feedback:</strong> Visual indicators for upload progress and errors</li>
+<li><strong>Detached process:</strong> SteamCMD runs in its own window, keeping the editor responsive</li>
+</ul>
+<hr />
+<h2 id="conclusion">Conclusion</h2>
+<p>This Steam upload tool demonstrates how <strong>Slate UI</strong> can create professional, integrated workflows within the Unreal Editor. By combining <strong>editor commands</strong>, <strong>custom menus</strong>, and <strong>process management</strong>, you can streamline repetitive tasks and reduce the chance of upload errors.</p>
+<p>This approach works well for:</p>
+<ul>
+<li>Build automation workflows</li>
+<li>Distribution pipelines requiring multiple upload targets</li>
+<li>Teams that need consistent upload procedures</li>
+<li>Projects with frequent Steam build iterations</li>
+</ul>
+<p>The same pattern can be extended to handle other external tools like <strong>console devkits</strong>, <strong>itch.io uploads</strong>, or <strong>custom CDN deployments</strong>.</p>
+
+        </article>
+    </div>
+</main>
+
+<style>
+/* Blog post styling */
+article p {
+    margin-bottom: 1.5rem;
+    color: #e2e8f0;
+}
+
+article h3 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 2rem 0 1rem 0;
+    color: #f1f5f9;
+}
+
+article h4 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 1.5rem 0 0.75rem 0;
+    color: #f1f5f9;
+}
+
+article ol, article ul {
+    padding-left: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+article ol li {
+    margin-bottom: 0.75rem;
+    color: #94a3b8;
+}
+
+article ul li {
+    margin-bottom: 0.25rem;
+    color: #94a3b8;
+}
+
+article strong {
+    color: #f1f5f9;
+}
+
+article code {
+    font-family: 'Courier New', monospace;
+    color: #22d3ee;
+    background-color: #1e293b;
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
+}
+
+article pre {
+    background-color: #1e293b;
+    border: 1px solid #334155;
+    color: #e2e8f0;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+article pre code {
+    color: #e2e8f0;
+    background: none;
+    padding: 0;
+}
+
+article hr {
+    border-color: #334155;
+    margin: 2rem 0;
+}
+
+article blockquote {
+    border-left: 4px solid #22d3ee;
+    padding-left: 1rem;
+    margin: 1.5rem 0;
+    color: #94a3b8;
+    font-style: italic;
+}
+</style>
+
+    <script src="/js/lazy-video.js" defer></script>
+</body>
+</html>
